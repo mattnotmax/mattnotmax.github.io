@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <title>
+        CyberChef &amp; DFIR - bit_of_hex
+      </title>
+    <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport"
+    content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="Cache-Control" content="no-transform" />
+  <meta http-equiv="Cache-Control" content="no-siteapp" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="format-detection" content="telephone=no,email=no,adress=no">
+  
+  <meta name="theme-color" content="#000000" />
+  
+  <meta http-equiv="window-target" content="_top" />
+  
+  
+  <meta name="description" content="I have a confession to make. I am part of the CyberChef cult. When you join a cult you find yourself saying things like, &amp;ldquo;Woah! How come I didn&amp;rsquo;t know about this before?&amp;rdquo; and &amp;ldquo;Where have you been all my life!&amp;rdquo; You also spend a lot of your time proselytising to other, random people about your &amp;lsquo;fantastic&amp;rsquo; new life.
+However, most cults take your time, soul, and money, and only give you a glass of Kool Aid in return." />
+  <meta name="generator" content="Hugo 0.68.3 with theme pure" />
+  <title>CyberChef &amp; DFIR - bit_of_hex</title>
+  
+  
+  <link rel="stylesheet" href="https://bitofhex.github.io/css/style.min.c4bc7071f132c964c2116bca53b392933f377e5ca7b7051ed245187c621a2d3e.css">
+  
+  <link rel="stylesheet" href="https://cdn.staticfile.org/highlight.js/9.15.10/styles/github.min.css" async>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.css" async>
+  <meta property="og:title" content="CyberChef &amp; DFIR" />
+<meta property="og:description" content="I have a confession to make. I am part of the CyberChef cult. When you join a cult you find yourself saying things like, &ldquo;Woah! How come I didn&rsquo;t know about this before?&rdquo; and &ldquo;Where have you been all my life!&rdquo; You also spend a lot of your time proselytising to other, random people about your &lsquo;fantastic&rsquo; new life.
+However, most cults take your time, soul, and money, and only give you a glass of Kool Aid in return." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://bitofhex.github.io/2018/05/cyberchef/" />
+<meta property="article:published_time" content="2018-05-28T14:06:10+00:00" />
+<meta property="article:modified_time" content="2018-05-28T14:06:10+00:00" />
+<meta itemprop="name" content="CyberChef &amp; DFIR">
+<meta itemprop="description" content="I have a confession to make. I am part of the CyberChef cult. When you join a cult you find yourself saying things like, &ldquo;Woah! How come I didn&rsquo;t know about this before?&rdquo; and &ldquo;Where have you been all my life!&rdquo; You also spend a lot of your time proselytising to other, random people about your &lsquo;fantastic&rsquo; new life.
+However, most cults take your time, soul, and money, and only give you a glass of Kool Aid in return.">
+<meta itemprop="datePublished" content="2018-05-28T14:06:10&#43;00:00" />
+<meta itemprop="dateModified" content="2018-05-28T14:06:10&#43;00:00" />
+<meta itemprop="wordCount" content="933">
+
+
+
+<meta itemprop="keywords" content="tools,cyberchef," /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="CyberChef &amp; DFIR"/>
+<meta name="twitter:description" content="I have a confession to make. I am part of the CyberChef cult. When you join a cult you find yourself saying things like, &ldquo;Woah! How come I didn&rsquo;t know about this before?&rdquo; and &ldquo;Where have you been all my life!&rdquo; You also spend a lot of your time proselytising to other, random people about your &lsquo;fantastic&rsquo; new life.
+However, most cults take your time, soul, and money, and only give you a glass of Kool Aid in return."/>
+
+  <!--[if lte IE 9]>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+    <![endif]-->
+
+  <!--[if lt IE 9]>
+      <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+    <![endif]-->
+
+</head>
+  </head>
+
+  
+  
+
+  <body class="main-center theme-black" itemscope itemtype="http://schema.org/WebPage"><header class="header" itemscope itemtype="http://schema.org/WPHeader">
+    <div class="slimContent">
+      <div class="navbar-header">
+        <div class="profile-block text-center">
+          <a id="avatar" href="https://twitter.com/mattnotmax" target="_blank">
+            <img class="img-circle img-rotate" src="https://bitofhex.github.io/logo.png" width="200" height="200">
+          </a>
+          <h2 id="name" class="hidden-xs hidden-sm">bit_of_hex</h2>
+          <h3 id="title" class="hidden-xs hidden-sm hidden-md">digital forensics | incident response</h3>
+          <small id="location" class="text-muted hidden-xs hidden-sm"><i class="icon icon-map-marker"></i>Melbourne, Australia</small>
+        </div><div class="search" id="search-form-wrap">
+    <form class="search-form sidebar-form">
+        <div class="input-group">
+            <input type="text" class="search-form-input form-control" placeholder="Search" />
+            <span class="input-group-btn">
+                <button type="submit" class="search-form-submit btn btn-flat" onclick="return false;"><i
+                        class="icon icon-search"></i></button>
+            </span>
+        </div>
+        <div class="ins-search">
+            <div class="ins-search-mask"></div>
+            <div class="ins-search-container">
+                <div class="ins-input-wrapper">
+                    <input type="text" class="ins-search-input" placeholder="Type something..."
+                        x-webkit-speech />
+                    <button type="button" class="close ins-close ins-selectable" data-dismiss="modal"
+                        aria-label="Close"><span aria-hidden="true">×</span></button>
+                </div>
+                <div class="ins-section-wrapper">
+                    <div class="ins-section-container"></div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+        <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#main-navbar" aria-controls="main-navbar" aria-expanded="false">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+      </div>
+      <nav id="main-navbar" class="collapse navbar-collapse" itemscope itemtype="http://schema.org/SiteNavigationElement" role="navigation">
+        <ul class="nav navbar-nav main-nav">
+            <li class="menu-item menu-item-home">
+                <a href="/">
+                    <i class="icon icon-home-fill"></i>
+                  <span class="menu-title">Home</span>
+                </a>
+            </li>
+            <li class="menu-item menu-item-archives">
+                <a href="/posts/">
+                    <i class="icon icon-archives-fill"></i>
+                  <span class="menu-title">Archives</span>
+                </a>
+            </li>
+            <li class="menu-item menu-item-tags">
+                <a href="/tags/">
+                    <i class="icon icon-tags"></i>
+                  <span class="menu-title">Tags</span>
+                </a>
+            </li>
+            <li class="menu-item menu-item-about">
+                <a href="/about/">
+                    <i class="icon icon-cup-fill"></i>
+                  <span class="menu-title">About</span>
+                </a>
+            </li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+<aside class="sidebar" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    
+      
+<div class="widget">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget-body">
+        <ul class="recent-post-list list-unstyled no-thumbnail">
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
+                        <a href="https://bitofhex.github.io/2020/02/sapphire-mushroom-lnk-files/" class="title">Suspected Sapphire Mushroom (APT-C-12) malicious LNK files</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2020-02-09 23:54:19 &#43;0000 UTC" itemprop="datePublished">2020-02-09</time>
+                    </p>
+                </div>
+            </li>
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
+                        <a href="https://bitofhex.github.io/2019/11/say-cheese-an-analysis-of-foto-lnk/" class="title">&#34;Say Cheese!&#34; An analysis of foto.lnk</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2019-11-16 16:46:26 &#43;0000 UTC" itemprop="datePublished">2019-11-16</time>
+                    </p>
+                </div>
+            </li>
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
+                        <a href="https://bitofhex.github.io/2019/07/deriving-intelligence-from-lnk-files/" class="title">Deriving intelligence from LNK files</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2019-07-15 02:14:48 &#43;0000 UTC" itemprop="datePublished">2019-07-15</time>
+                    </p>
+                </div>
+            </li>
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
+                        <a href="https://bitofhex.github.io/2019/02/base64-encoded-signatures/" class="title">Base64 Encoded File Signatures</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2019-02-19 00:06:06 &#43;0000 UTC" itemprop="datePublished">2019-02-19</time>
+                    </p>
+                </div>
+            </li>
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
+                        <a href="https://bitofhex.github.io/2019/01/attack-and-singapore-breach/" class="title">ATT&amp;CKing the Singapore Health Data Breach</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2019-01-12 17:53:26 &#43;0000 UTC" itemprop="datePublished">2019-01-12</time>
+                    </p>
+                </div>
+            </li>
+        </ul>
+    </div>
+</div>
+  </div>
+</aside>
+
+    
+    
+<aside class="sidebar sidebar-toc collapse" id="collapseToc" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    <h4 class="toc-title">Catalogue</h4>
+    <nav id="toc" class="js-toc toc">
+
+    </nav>
+  </div>
+</aside>
+<main class="main" role="main"><div class="content">
+  <article id="-cyberchef" class="article article-type-" itemscope
+    itemtype="http://schema.org/BlogPosting">
+    
+    <div class="article-header">
+      <h1 itemprop="name">
+  <a
+    class="article-title"
+    href="/2018/05/cyberchef/"
+    >CyberChef &amp; DFIR</a
+  >
+</h1>
+
+      <div class="article-meta">
+        
+<span class="article-date">
+  <i class="icon icon-calendar-check"></i>&nbsp;
+<a href="https://bitofhex.github.io/2018/05/cyberchef/" class="article-date">
+  <time datetime="2018-05-28 14:06:10 &#43;0000 UTC" itemprop="datePublished">2018-05-28</time>
+</a>
+</span>
+  
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>&nbsp;
+    <a class="article-tag-link" href="/tags/tools/"> tools </a>
+    <a class="article-tag-link" href="/tags/cyberchef/"> cyberchef </a>
+  </span>
+
+        <span class="post-comment"><i class="icon icon-comment"></i>&nbsp;<a href="/2018/05/cyberchef/#comments"
+            class="article-comment-link">Comments</a></span>
+      </div>
+    </div>
+    <div class="article-entry marked-body js-toc-content" itemprop="articleBody">
+      <p>I have a confession to make. I am part of the CyberChef cult. When you join a cult you find yourself saying things like, &ldquo;Woah! How come I didn&rsquo;t know about this before?&rdquo; and &ldquo;Where have you been all my life!&rdquo; You also spend a lot of your time proselytising to other, random people about your &lsquo;fantastic&rsquo; new life.</p>
+<p>However, most cults take your time, soul, and money, and only give you a glass of Kool Aid in return. CyberChef is different; CyberChef delivers. The best part is no matter what role you perform in the DFIR world, CyberChef can help you.</p>
+<p>CyberChef is an open source tool maintained by <a href="https://github.com/gchq/CyberChef">GCHQ</a>. It provides a drag and drop interface via a web browser (Firefox &amp; Chrome) to quickly perform a wide range of data manipulation functions called &lsquo;operations&rsquo;. A sequence of operations is called a &lsquo;recipe&rsquo;.</p>
+<p>As all the processing is client-side, CyberChef can be downloaded and used offline or in an air-gapped forensic network. CyberChef has operations useful for disk forensics, malware &amp; network analysts, and even OSINT researchers.</p>
+<p>Some (of the many) useful operations include:</p>
+<h1 id="analyse-hash">Analyse Hash</h1>
+<p>There is a range of hashing functions available in CyberChef, from MD5 and SHA1 to more esoteric options. But one great operation is &lsquo;Analyse Hash&rsquo; which examines a provided hash and provides possible functions that created it. One possible use case is exploring databases where developers may obfuscate user data through a hash. While it cannot provide the exact hash due to the lack of overall context, this can give you a lead on what hash function was used.</p>
+<div style="text-align:center"><img src="/2018/05/sha-3-hash-example.png" alt="sha-3-hash-example" style="border: #000000 1px outset"></div>
+<h1 id="extract--remove-exif">Extract &amp; Remove EXIF</h1>
+<p>There are plenty of tools to extract EXIF data, my go-to option is usually <a href="https://www.sno.phy.queensu.ca/~phil/exiftool/">exiftool</a>. However, for simple, one-off operations CyberChef can pull EXIF from a file. OSINT researchers might find this useful as well as DFIR.</p>
+<div style="text-align:center"><img src="/2018/05/cyberchef---exif-data.png" alt="cyberchef---exif-data" style="border: #000000 1px outset"></div>
+<p>What&rsquo;s also useful is the &lsquo;remove EXIF&rsquo; operation. This is handy if you quickly want to ensure a photo or document doesn&rsquo;t have any identifying EXIF data before you send it out.</p>
+<h1 id="to--from-base64-et-al">To &amp; From Base64 (et al.)</h1>
+<p>Base64 is widespread throughout DFIR. Other types of encoding, such as Base32, have been seen in <a href="https://www.fireeye.com/blog/threat-research/2016/04/multigrain_pointo.html">malware</a> and some P2P applications. CyberChef has Base64/32/58 options which also allow you to enter a custom character set. This is useful for web URL data, malware, or encoding that uses its own variants.</p>
+<div style="text-align:center"><img src="/2018/05/cyberchef---base58.png" alt="cyberchef---base58" style="border: #000000 1px outset"></div>
+<h1 id="data-extraction-functions">Data Extraction Functions</h1>
+<p>CyberChef can extract IPs, email addresses, MAC addresses, URLs, domains, file paths, and EXIF data which is great for processing one-off text dumps.</p>
+<p>Extracting data from pastebin is a breeze:</p>
+<div style="width: 450px; height: 669px;" vspace="10"><img src="/2018/05/pastebin-redacted.png" alt="pastebin-redacted" style="border: #000000 1px outset"></div>
+<div style="text-align:center"><img src="/2018/05/pastebin-cyberchef.png" alt="pastebin-cyberchef" style="border: #000000 1px outset"></div>
+<h1 id="forks">Forks</h1>
+<p>One less obvious task is to apply an operation to a &lsquo;list&rsquo; or delimited input. CyberChef uses the term &lsquo;fork&rsquo;, whereby you can add a delimiter for the tool to apply each operation (e.g. line by line). Below we have a list of UNIX timestamps, but only one is being converted.</p>
+<div style="text-align:center"><img src="/2018/05/CyberChef-no-fork.png" alt="CyberChef-no-fork" style="border: #000000 1px outset"></div>
+<p>Adding the &lsquo;fork&rsquo; operation, fixes up the data output.</p>
+<div style="text-align:center"><img src="/2018/05/cyberchef---fork.png" alt="cyberchef---fork" style="border: #000000 1px outset"></div>
+<h1 id="comments">Comments</h1>
+<p>Just like normal code, comments are available to aid sharing a recipe, or simply to remind yourself how you arrived at a certain combination of operations.</p>
+<div style="text-align:center"><img src="/2018/05/cyberchef---comments.png" alt="cyberchef---comments" style="border: #000000 1px outset"></div>
+<h1 id="longer-recipes">Longer Recipes</h1>
+<p>More powerful use cases are stringing operations together. CyberChef provides a full range of options to create recipes which are essentially small code blocks. So you could unzip, decode Base64, and then extract certain data (e.g. IP addresses). Some great work using CyberChef recipes is explored by Ryan Benson in his Chrome forensics presentation. While the whole presentation is worth watching, his use of CyberChef starts at 11:50.</p>
+<div style="text-align:center"><iframe width="560" height="315" src="https://www.youtube.com/embed/LnhSTZgzKuY" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>
+<h1 id="google-ei-dates">Google ei dates</h1>
+<p>Another small example of chaining operations together is converting Google &lsquo;ei&rsquo; encoded strings into usable date formats. As a background, Google ei dates are an encoded Base64 string containing various parameters including a Unix timestamp as recorded by Google. An example is below.</p>
+<div style="text-align:center"><img src="/2018/05/google-url-with-ei.png" alt="google-url-with-ei" style="border: #000000 1px outset"></div>
+<p>It&rsquo;s already parsed by a number of tools, but if you understand the encoding steps the recipe can be written in CyberChef.</p>
+<p>The decoding is as follows:</p>
+<ol>
+<li>Convert from URL-safe Base64<sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup>;</li>
+<li>Convert to hexadecimal;</li>
+<li>Take the first four hex bytes;</li>
+<li>Convert the hex bytes to little endian;</li>
+<li>Convert to decimal; and</li>
+<li>Convert from UNIX timestamp to a usable format.</li>
+</ol>
+<div style="text-align:center"><img src="/2018/05/cyberchef---ei-dates.png" alt="cyberchef---ei-dates" style="border: #000000 1px outset"></div>
+<p>These recipes can be saved for re-use in &lsquo;Cyberchef format&rsquo; or JSON as follows:</p>
+<pre><code class="json">[
+  { "op": "Comment",
+    "args": ["1. Convert from URL-safe Base64\n2. Convert to hexadecimal\n3. Take first 4 bytes\n4. Switch to Little Endian format\n5. Convert from hexadecimal to decimal\n6. Convert to UNIX timestamp"] },
+  { "op": "Fork",
+    "args": ["\\n", "\\n", false] },
+  { "op": "From Base64",
+    "args": ["A-Za-z0-9-_=", true] },
+  { "op": "To Hex",
+    "args": ["None"] },
+  { "op": "Take bytes",
+    "args": [0, 8, false] },
+  { "op": "Swap endianness",
+    "args": ["Hex", 4, true] },
+  { "op": "From Base",
+    "args": [16] },
+  { "op": "From UNIX Timestamp",
+    "args": ["Seconds (s)"] }
+]</pre></code> 
+<h1 id="final-thoughts">Final Thoughts</h1>
+<p>This overview barely scratches the surface of CyberChef. Deobfuscating malware scripts, a quick regex, one-off log file analysis, or text normalisation are all possible. If I haven&rsquo;t converted you to a CyberChef devotee, then don&rsquo;t trust me! Look <a href="https://isc.sans.edu/forums/diary/CyberChef+a+Must+Have+Tool+in+your+Tool+bag/22458/">here</a>, or <a href="https://betweentwodfirns.blogspot.com.au/2017/06/cyberchef-example-dfir-use-cases.html">here</a>. Like any good cult member, I&rsquo;ll point out other satisfied customers!</p>
+<p>Thanks for reading. If you have any questions, comments or suggestions please let me know at <a href="mailto:matt@bitofhex.com">matt@bitofhex.com</a> or on Twitter at <a href="https://twitter.com/mattnotmax">@mattnotmax</a></p>
+<h1 id="related-links">Related Links</h1>
+<p><a href="https://gchq.github.io/CyberChef/">CyberChef</a></p>
+<section class="footnotes" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn:1" role="doc-endnote">
+<p>Google strips the &lsquo;=&rsquo; padding from the Base64 in the URL data. As we are only using the first four bytes, it is not necessary to add the padding, although this could be done for completeness by converting back to standard Base64. Of course, CyberChef can show this using the &lsquo;Show Base64 offsets&rsquo; operation. Check it out! <a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+</ol>
+</section>
+
+    </div>
+    <div class="article-footer">
+<blockquote class="mt-2x">
+  <ul class="post-copyright list-unstyled">
+    <li class="post-copyright-link hidden-xs">
+      <strong>Permalink: </strong>
+      <a href="https://bitofhex.github.io/2018/05/cyberchef/" title="CyberChef &amp; DFIR" target="_blank" rel="external">https://bitofhex.github.io/2018/05/cyberchef/</a>
+    </li>
+    <li class="post-copyright-license">
+      <strong>License：</strong><a href="http://creativecommons.org/licenses/by/4.0/deed.zh" target="_blank" rel="external">CC BY 4.0 CN</a>
+    </li>
+  </ul>
+</blockquote>
+
+<div class="panel panel-default panel-badger">
+  <div class="panel-body">
+    <figure class="media">
+      <div class="media-left">
+        <a href="https://twitter.com/mattnotmax" target="_blank" class="img-burn thumb-sm visible-lg">
+          <img src="https://bitofhex.github.io/logo.png" class="img-rounded w-full" alt="">
+        </a>
+      </div>
+      <div class="media-body">
+        <h3 class="media-heading"><a href="https://twitter.com/mattnotmax" target="_blank"><span class="text-dark">bit_of_hex</span><small class="ml-1x">digital forensics | incident response</small></a></h3>
+        <div>476c616420796f7520617265207468617420696e74657265737465642e204861766520612067726561742064617921</div>
+      </div>
+    </figure>
+  </div>
+</div>
+    </div>
+  </article>
+
+</div><nav class="bar bar-footer clearfix" data-stick-bottom>
+    <div class="bar-inner">
+        <ul class="pager pull-left">
+            <li class="prev">
+                <a href="https://bitofhex.github.io/2018/05/memory-forensics-tor-part-two/" title="Memory Forensics &amp; Tor (part two)"><i
+                        class="icon icon-angle-left"
+                        aria-hidden="true"></i><span>&nbsp;&nbsp;Older</span></a>
+            </li>
+            <li class="next">
+                <a href="https://bitofhex.github.io/2018/06/forensic-typologies/"
+                    title="A Different View of Forensic Artefact Typologies"><span>Newer&nbsp;&nbsp;</span><i
+                        class="icon icon-angle-right" aria-hidden="true"></i></a>
+            </li>
+            
+            <li class="toggle-toc">
+                <a class="toggle-btn collapsed" data-toggle="collapse" href="#collapseToc" aria-expanded="false"
+                    title="Catalogue" role="button">
+                    <span>[&nbsp;</span><span>Catalogue</span>
+                    <i class="text-collapsed icon icon-anchor"></i>
+                    <i class="text-in icon icon-close"></i>
+                    <span>]</span>
+                </a>
+            </li>
+        </ul>
+        <div class="bar-right">
+            <div class="share-component" data-sites="facebook,twitter,linkedin,google"
+                data-mobile-sites="facebook,twitter,linkedin,google"></div>
+        </div>
+    </div>
+</nav>
+
+</main><footer class="footer" itemscope itemtype="http://schema.org/WPFooter">
+<ul class="social-links">
+    <li><a href="https://github.com/mattnotmax" target="_blank" title="github" data-toggle=tooltip data-placement=top >
+            <i class="icon icon-github"></i></a></li>
+    <li><a href="https://bitofhex.github.io/index.xml" target="_blank" title="rss" data-toggle=tooltip data-placement=top >
+            <i class="icon icon-rss"></i></a></li>
+    <li><a href="https://twitter.com/mattnotmax" target="_blank" title="twitter" data-toggle=tooltip data-placement=top >
+            <i class="icon icon-twitter"></i></a></li>
+</ul>
+  <div class="copyright">
+    &copy;2018  -
+    2020
+    <div class="publishby">
+        Theme by <a href="https://github.com/xiaoheiAh" target="_blank"> xiaoheiAh </a>base on<a href="https://github.com/xiaoheiAh/hugo-theme-pure" target="_blank"> pure</a>.
+    </div>
+  </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_SVG"></script>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+            showMathMenu: false, //disables context menu
+            tex2jax: {
+            inlineMath: [ ['$','$'], ['\\(','\\)'] ]
+           }
+    });
+</script>
+
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.4.1/dist/jquery.min.js"></script>
+<script>
+    window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')
+</script>
+<script type="text/javascript" src="https://cdn.staticfile.org/highlight.js/9.15.10/highlight.min.js"></script>
+<script type="text/javascript" src="https://cdn.staticfile.org/highlight.js/9.15.10/languages/python.min.js" defer></script>
+<script type="text/javascript" src="https://cdn.staticfile.org/highlight.js/9.15.10/languages/javascript.min.js" defer></script>
+<script type="text/javascript" src="https://cdn.staticfile.org/highlight.js/9.15.10/languages/powershell.min.js" defer></script><script>
+    hljs.configure({
+        tabReplace: '    ', 
+        classPrefix: ''     
+        
+    })
+    hljs.initHighlightingOnLoad();
+</script>
+<script src="https://bitofhex.github.io/js/application.min.bdeb64b910570b6c41badc6a05b7afb0c8ad9efd8525de3c7257d59e786326a3.js"></script>
+<script src="https://bitofhex.github.io/js/plugin.min.51ff8c7317566f82259170fa36e09c4493adc9b9378b427a01ad3f017ebac7dd.js"></script>
+
+<script>
+    (function (window) {
+        var INSIGHT_CONFIG = {
+            TRANSLATION: {
+                POSTS: 'Posts',
+                PAGES: 'Pages',
+                CATEGORIES: 'Categories',
+                TAGS: 'Tags',
+                UNTITLED: '(Untitled)',
+            },
+            ROOT_URL: 'https:\/\/bitofhex.github.io\/',
+            CONTENT_URL: 'https:\/\/bitofhex.github.io\/\/searchindex.json ',
+        };
+        window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+    })(window);
+</script>
+<script type="text/javascript" src="https://bitofhex.github.io/js/insight.min.a343cd9a5a7698336b28ef3a7c16a3a1b1d2d5fb17dc8ed04022bbe08cc5459073a15bdafa3a8a58cdd56080784bdd69fa70b1ae8597565c799c57ed00f0e120.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.min.js"></script>
+<script>
+    tocbot.init({
+        
+        tocSelector: '.js-toc',
+        
+        contentSelector: '.js-toc-content',
+        
+        headingSelector: 'h1, h2, h3',
+        
+        hasInnerContainers: true,
+    });
+</script>
+
+
+  </body>
+</html>

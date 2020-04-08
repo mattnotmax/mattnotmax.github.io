@@ -1,0 +1,790 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <title>
+        Memory Forensics &amp; Tor (part two) - bit_of_hex
+      </title>
+    <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport"
+    content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="Cache-Control" content="no-transform" />
+  <meta http-equiv="Cache-Control" content="no-siteapp" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="format-detection" content="telephone=no,email=no,adress=no">
+  
+  <meta name="theme-color" content="#000000" />
+  
+  <meta http-equiv="window-target" content="_top" />
+  
+  
+  <meta name="description" content="In my previous post I used Volatility to examine a memory image from a hypothetical Tor user accessing webmail, the internet, and a Tor hidden service. From that analysis I could ascertain with good confidence a user of the operating system connected to the Tor network from a USB on drive E:.
+In this post, I will continue with the same memory image but see what additional information can be revealed from data carving tools." />
+  <meta name="generator" content="Hugo 0.68.3 with theme pure" />
+  <title>Memory Forensics &amp; Tor (part two) - bit_of_hex</title>
+  
+  
+  <link rel="stylesheet" href="https://bitofhex.github.io/css/style.min.c4bc7071f132c964c2116bca53b392933f377e5ca7b7051ed245187c621a2d3e.css">
+  
+  <link rel="stylesheet" href="https://cdn.staticfile.org/highlight.js/9.15.10/styles/github.min.css" async>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.css" async>
+  <meta property="og:title" content="Memory Forensics &amp; Tor (part two)" />
+<meta property="og:description" content="In my previous post I used Volatility to examine a memory image from a hypothetical Tor user accessing webmail, the internet, and a Tor hidden service. From that analysis I could ascertain with good confidence a user of the operating system connected to the Tor network from a USB on drive E:.
+In this post, I will continue with the same memory image but see what additional information can be revealed from data carving tools." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://bitofhex.github.io/2018/05/memory-forensics-tor-part-two/" />
+<meta property="article:published_time" content="2018-05-10T00:55:59+00:00" />
+<meta property="article:modified_time" content="2018-05-10T00:55:59+00:00" />
+<meta itemprop="name" content="Memory Forensics &amp; Tor (part two)">
+<meta itemprop="description" content="In my previous post I used Volatility to examine a memory image from a hypothetical Tor user accessing webmail, the internet, and a Tor hidden service. From that analysis I could ascertain with good confidence a user of the operating system connected to the Tor network from a USB on drive E:.
+In this post, I will continue with the same memory image but see what additional information can be revealed from data carving tools.">
+<meta itemprop="datePublished" content="2018-05-10T00:55:59&#43;00:00" />
+<meta itemprop="dateModified" content="2018-05-10T00:55:59&#43;00:00" />
+<meta itemprop="wordCount" content="2818">
+
+
+
+<meta itemprop="keywords" content="memory forensics,tor," /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Memory Forensics &amp; Tor (part two)"/>
+<meta name="twitter:description" content="In my previous post I used Volatility to examine a memory image from a hypothetical Tor user accessing webmail, the internet, and a Tor hidden service. From that analysis I could ascertain with good confidence a user of the operating system connected to the Tor network from a USB on drive E:.
+In this post, I will continue with the same memory image but see what additional information can be revealed from data carving tools."/>
+
+  <!--[if lte IE 9]>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+    <![endif]-->
+
+  <!--[if lt IE 9]>
+      <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+    <![endif]-->
+
+</head>
+  </head>
+
+  
+  
+
+  <body class="main-center theme-black" itemscope itemtype="http://schema.org/WebPage"><header class="header" itemscope itemtype="http://schema.org/WPHeader">
+    <div class="slimContent">
+      <div class="navbar-header">
+        <div class="profile-block text-center">
+          <a id="avatar" href="https://twitter.com/mattnotmax" target="_blank">
+            <img class="img-circle img-rotate" src="https://bitofhex.github.io/logo.png" width="200" height="200">
+          </a>
+          <h2 id="name" class="hidden-xs hidden-sm">bit_of_hex</h2>
+          <h3 id="title" class="hidden-xs hidden-sm hidden-md">digital forensics | incident response</h3>
+          <small id="location" class="text-muted hidden-xs hidden-sm"><i class="icon icon-map-marker"></i>Melbourne, Australia</small>
+        </div><div class="search" id="search-form-wrap">
+    <form class="search-form sidebar-form">
+        <div class="input-group">
+            <input type="text" class="search-form-input form-control" placeholder="Search" />
+            <span class="input-group-btn">
+                <button type="submit" class="search-form-submit btn btn-flat" onclick="return false;"><i
+                        class="icon icon-search"></i></button>
+            </span>
+        </div>
+        <div class="ins-search">
+            <div class="ins-search-mask"></div>
+            <div class="ins-search-container">
+                <div class="ins-input-wrapper">
+                    <input type="text" class="ins-search-input" placeholder="Type something..."
+                        x-webkit-speech />
+                    <button type="button" class="close ins-close ins-selectable" data-dismiss="modal"
+                        aria-label="Close"><span aria-hidden="true">×</span></button>
+                </div>
+                <div class="ins-section-wrapper">
+                    <div class="ins-section-container"></div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+        <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#main-navbar" aria-controls="main-navbar" aria-expanded="false">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+      </div>
+      <nav id="main-navbar" class="collapse navbar-collapse" itemscope itemtype="http://schema.org/SiteNavigationElement" role="navigation">
+        <ul class="nav navbar-nav main-nav">
+            <li class="menu-item menu-item-home">
+                <a href="/">
+                    <i class="icon icon-home-fill"></i>
+                  <span class="menu-title">Home</span>
+                </a>
+            </li>
+            <li class="menu-item menu-item-archives">
+                <a href="/posts/">
+                    <i class="icon icon-archives-fill"></i>
+                  <span class="menu-title">Archives</span>
+                </a>
+            </li>
+            <li class="menu-item menu-item-tags">
+                <a href="/tags/">
+                    <i class="icon icon-tags"></i>
+                  <span class="menu-title">Tags</span>
+                </a>
+            </li>
+            <li class="menu-item menu-item-about">
+                <a href="/about/">
+                    <i class="icon icon-cup-fill"></i>
+                  <span class="menu-title">About</span>
+                </a>
+            </li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+<aside class="sidebar" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    
+      
+<div class="widget">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget-body">
+        <ul class="recent-post-list list-unstyled no-thumbnail">
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
+                        <a href="https://bitofhex.github.io/2020/02/sapphire-mushroom-lnk-files/" class="title">Suspected Sapphire Mushroom (APT-C-12) malicious LNK files</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2020-02-09 23:54:19 &#43;0000 UTC" itemprop="datePublished">2020-02-09</time>
+                    </p>
+                </div>
+            </li>
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
+                        <a href="https://bitofhex.github.io/2019/11/say-cheese-an-analysis-of-foto-lnk/" class="title">&#34;Say Cheese!&#34; An analysis of foto.lnk</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2019-11-16 16:46:26 &#43;0000 UTC" itemprop="datePublished">2019-11-16</time>
+                    </p>
+                </div>
+            </li>
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
+                        <a href="https://bitofhex.github.io/2019/07/deriving-intelligence-from-lnk-files/" class="title">Deriving intelligence from LNK files</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2019-07-15 02:14:48 &#43;0000 UTC" itemprop="datePublished">2019-07-15</time>
+                    </p>
+                </div>
+            </li>
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
+                        <a href="https://bitofhex.github.io/2019/02/base64-encoded-signatures/" class="title">Base64 Encoded File Signatures</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2019-02-19 00:06:06 &#43;0000 UTC" itemprop="datePublished">2019-02-19</time>
+                    </p>
+                </div>
+            </li>
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
+                        <a href="https://bitofhex.github.io/2019/01/attack-and-singapore-breach/" class="title">ATT&amp;CKing the Singapore Health Data Breach</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2019-01-12 17:53:26 &#43;0000 UTC" itemprop="datePublished">2019-01-12</time>
+                    </p>
+                </div>
+            </li>
+        </ul>
+    </div>
+</div>
+  </div>
+</aside>
+
+    
+    
+<aside class="sidebar sidebar-toc collapse" id="collapseToc" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    <h4 class="toc-title">Catalogue</h4>
+    <nav id="toc" class="js-toc toc">
+
+    </nav>
+  </div>
+</aside>
+<main class="main" role="main"><div class="content">
+  <article id="-memory-forensics-tor-part-two" class="article article-type-" itemscope
+    itemtype="http://schema.org/BlogPosting">
+    
+    <div class="article-header">
+      <h1 itemprop="name">
+  <a
+    class="article-title"
+    href="/2018/05/memory-forensics-tor-part-two/"
+    >Memory Forensics &amp; Tor (part two)</a
+  >
+</h1>
+
+      <div class="article-meta">
+        
+<span class="article-date">
+  <i class="icon icon-calendar-check"></i>&nbsp;
+<a href="https://bitofhex.github.io/2018/05/memory-forensics-tor-part-two/" class="article-date">
+  <time datetime="2018-05-10 00:55:59 &#43;0000 UTC" itemprop="datePublished">2018-05-10</time>
+</a>
+</span>
+  
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>&nbsp;
+    <a class="article-tag-link" href="/tags/memory-forensics/"> memory forensics </a>
+    <a class="article-tag-link" href="/tags/tor/"> tor </a>
+  </span>
+
+        <span class="post-comment"><i class="icon icon-comment"></i>&nbsp;<a href="/2018/05/memory-forensics-tor-part-two/#comments"
+            class="article-comment-link">Comments</a></span>
+      </div>
+    </div>
+    <div class="article-entry marked-body js-toc-content" itemprop="articleBody">
+      <p>In my <a href="https://bitofhex.com/2018/04/29/volatility-and-tor/">previous post</a> I used Volatility to examine a memory image from a hypothetical Tor user accessing webmail, the internet, and a Tor hidden service. From that analysis I could ascertain with good confidence a user of the operating system connected to the Tor network from a USB on drive E:.</p>
+<p>In this post, I will continue with the same memory image but see what additional information can be revealed from data carving tools.</p>
+<h2 id="bulk-extractor">Bulk Extractor</h2>
+<p><a href="https://github.com/simsong/bulk_extractor">Bulk Extractor</a> uses &lsquo;scanners&rsquo; to carve data of interest from either memory or disk images without relying on the file system. This can include URLs, emails, credit card numbers, IP addresses, network traffic and much more.</p>
+<p>There is an extensive range of options available to tune the processing to your needs by enabling or disabling the various scanners. This might be necessary if you are limited by what you are <em>allowed</em> to search for, or have a large disk image. However, running Bulk Extractor with default options is straightforward against a small memory image such as ours: <code>bulk_extractor -o &lt;output directory&gt; &lt;source file&gt;</code>.</p>
+<pre><code class="xml">dfir@LAPTOP:/mnt/c/BoH$ bulk_extractor -o output Win10_14393_Tor_Closed.vmem
+bulk_extractor version: 1.5.5
+Hostname: LAPTOP
+Input file: Win10_14393_Tor_Closed.vmem
+Output directory: output
+Disk Size: 4294967296
+Threads: 8
+Attempt to open Win10_14393_Tor_Closed.vmem
+15:43:18 Offset 67MB (1.56%) Done in  0:00:17 at 15:43:35
+15:43:30 Offset 150MB (3.52%) Done in  0:05:30 at 15:49:00
+15:43:32 Offset 234MB (5.47%) Done in  0:04:08 at 15:47:40
+***snipped***
+15:51:38 Offset 4177MB (97.27%) Done in  0:00:14 at 15:51:52
+15:51:45 Offset 4261MB (99.22%) Done in  0:00:03 at 15:51:48
+All data are read; waiting for threads to finish...
+Time elapsed waiting for 8 threads to finish:
+     (timeout in 60 min.)
+All Threads Finished!
+Producer time spent waiting: 470.968 sec.
+Average consumer time spent waiting: 0.481216 sec.
+*******************************************
+** bulk_extractor is probably CPU bound. **
+**    Run on a computer with more cores  **
+**      to get better performance.       **
+*******************************************
+MD5 of Disk Image: 01b135f50fefa0de0a58704b6649e174
+Phase 2. Shutting down scanners
+Phase 3. Creating Histograms
+Elapsed time: 516.226 sec.
+Total MB processed: 4294
+Overall performance: 8.31994 MBytes/sec (1.03999 MBytes/sec/thread)
+Total email features found: 1103
+</code></pre>
+<p>The beauty (or fallacy!) of Bulk Extractor is it will use ~95% CPU to get the job done. This is great, but don&rsquo;t expect to multi-task, especially over a big image.</p>
+<div style="text-align:center"><img src="/2018/04/1-Task-Manager.png" alt="1-Task-Manager" style="border: #000000 1px outset"></div>
+<p>The output is placed into the specified directory and split into various text files.</p>
+<pre><code class="xml">dfir@LAPTOP:/mnt/c/BoH/output$ ls -sSh
+total 153M
+ 60M windirs.txt            56K url_services.txt               0 jpeg_carved.txt              0 gps.txt
+ 59M url.txt                28K ip.txt                         0 telephone_histogram.txt      0 httplogs.txt
+ 25M domain.txt             24K ether.txt                      0 ether_histogram.txt          0 kml.txt
+7.2M winpe.txt              16K email_histogram.txt            0 ip_histogram.txt             0 pii_teamviewer.txt
+1.1M json.txt              8.0K sqlite_carved.txt              0 ccn_histogram.txt            0 rar.txt
+952K zip.txt               8.0K aes_keys.txt                   0 url_searches.txt             0 unrar_carved.txt
+472K url_histogram.txt     4.0K email_domain_histogram.txt     0 url_facebook-address.txt     0 unzip_carved.txt
+304K packets.pcap          4.0K telephone.txt                  0 alerts.txt                   0 url_facebook-id.txt
+188K email.txt             4.0K exif.txt                       0 ccn_track2_histogram.txt     0 url_microsoft-live.txt
+148K rfc822.txt            1.0K ccn.txt                        0 ccn_track2.txt               0 vcard.txt
+ 80K winlnk.txt               0 jpeg_carved                    0 elf.txt                      0 winprefetch.txt
+ 80K domain_histogram.txt     0 sqlite_carved                  0 find_histogram.txt
+ 64K report.xml               0 pii.txt                        0 find.txt
+ </code></pre>
+<p>From the memory image, Bulk Extractor has identified 153 MB of data; however, most of this data is from a select few files. Because there is so <em>much</em> data the problem is actually going to be looking through it and ascertaining its meaning within the memory image (if that is at all possible).</p>
+<p>This brings the analysis to an important point. In this contrived scenario, the web browsing is solely from one known session; however, this cannot be assumed in a real investigation. Any artefact from Bulk Extractor should simply be treated as an indicator. Just because a URL or email address is in the output doesn&rsquo;t mean that our hypothetical user accessed it, or it&rsquo;s relevant in any way.</p>
+<h2 id="searching-for-tor-hidden-services">Searching for Tor hidden services</h2>
+<p>Given the background to this investigation, we know that a user accessed the Tor network, so a logical start would be to grep in <code>url.txt</code> for &lsquo;onion&rsquo; to determine if Tor hidden services were recorded in the memory image.</p>
+<pre><code class="xml">dfir@LAPTOP:/mnt/c/BoH/output$ cat url.txt | grep "onion"
+339718862       https://www.nytimes3xbfgragh.onion/     \x00\x00M\x00\x00\x00\x08\x00\x00\x00\x01%\x00\x00\x00 https://www.nytimes3xbfgragh.onion/\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00
+462190668       https://www.nytimes3xbfgragh.onion/     \xBB\x01\x00\x00\x00\x00\x00\x00#\x00\x00\x00\x00\x00\x00\x00https://www.nytimes3xbfgragh.onion/\xBF\x00\x00\x00\x00\x00\x00\x00\x00\x05\x00\x00\x00\x08\x00\x00
+458557510-ZIP-1599      https://3g2upl4pq6kufc4m.onion  POST" template="https://3g2upl4pq6kufc4m.onion">\x0A  Param name
+458557510-ZIP-1693      https://3g2upl4pq6kufc4m.onion  rl\x0ASearchForm https://3g2upl4pq6kufc4m.onion /SearchForm>\x0A/
+583230264       https://www.nytimes3xbfgragh.onion/2018/03/17/world/asia/us-technology-smuggling-foreign-weapons.html?action=click&module=In%20Other%20News&pgtype=Homepage&action=click&module=Latest&pgtype=Homepage     \xBB\x01\x00\x00\x00\x00\x00\x00\xC6\x00\x00\x00\x00\x00\x00\x00https://www.nytimes3xbfgragh.onion/2018/03/17/world/asia/us-technology-smuggling-foreign-weapons.html?action=click&module=In%20Other%20News&pgtype=Homepage&action=click&module=Latest&pgtype=Homepage\xBF\xBF\x00\x00\x00\x00\x00\x00\x00\x00\x05\x00\x00\x00\x08\x00
+739017720       https://www.nytimes3xbfgragh.onion      6\x00\x00\x00\x03\x00\xFF\xFF"\x00\x00\x80\x04\x00\xFF\xFFhttps://www.nytimes3xbfgragh.onion\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x13\x00\xFF\xFF\x0C\x00
+***snipped and edited for display***</code></pre>
+<p>It&rsquo;s here that we start to get an idea that there is a lot of data to cover. In fact there are 92 records containing &lsquo;onion&rsquo;. We can clean up this output and get an idea of the unique entries.</p>
+<pre><code class="xml">dfir@LAPTOP:/mnt/c/BoH/output$ cat url.txt | grep "onion" | awk '{print $2}' | sort | uniq -c | sort -nr
+     50 https://www.nytimes3xbfgragh.onion
+     14 https://www.nytimes3xbfgragh.onion/
+     10 https://www.nytimes3xbfgragh.onion/2018/03/17/world/asia/us-technology-smuggling-foreign-weapons.html?action=click&module=In%20Other%20News&pgtype=Homepage&action=click&module=Latest&pgtype=Homepage
+      6 https:/01.graylady3jvrrxbe.onion
+      6 https://et.nytimes3xbfgragh.onion
+      2 https://pnytimes.chartbeat.net/ping?h=nytimes.com&p=%2F2018%2F03%2F17%2Fworld%2Fasia%2Fus-technology-smuggling-foreign-weapons.html%3Faction%3Dclick%26module%3DIn%2520Other%2520News%26pgtype%3DHomepage%26action%3Dclick%26module%3DLatest%26pgtype%3DHomepage&u=BbmfdHBIgFSHhtUPz&d=nytimes3xbfgragh.onion&g=16698&g0=World%2CAsia%20Pacific%2Cinternational_desk&g1=RON%20NIXON&n=1&f=00001&c=1.75&x
+      2 https://3g2upl4pq6kufc4m.onion
+      1 https://et.nytimes.com/?subject=page&url=https%3A%2F%2Fwww.nytimes3xbfgragh.onion%2F&assetUrl=https%3A%2F%2Fwww.nytimes3xbfgragh.onion%2F&referrer=&clientTimeStamp=1521372293400&totalTime=272800&evtUUID=35f71ccd-53d5-4880-8284-0ce4a04aaa7f&page_view_id=0307636b-421f-4866-9b06-6e73d188ba1a&performance=%7B%7D&presentation=%7B%22pageType%22%3A%22Homepage%22%2C%22program%22%3A%7B%22breakpoint%
+      1 https://djdkduep62kz4nzx.onion.to/</code></pre>
+<p>Even though we only accessed one hidden service, <a href="https://www.nytimes3xbfgragh.onion">https://www.nytimes3xbfgragh.onion</a>, there are a number of other URLs and we need ascertain their relevance. A quick check of the URL prefix indicates that <a href="https://3g2upl4pq6kufc4m.onion">https://3g2upl4pq6kufc4m.onion</a> is the DuckDuckGo search engine.</p>
+<div style="text-align:center"><img src="/2018/04/2-Duck-Duck-Go.png" alt="2-Duck-Duck-Go" style="border: #000000 1px outset"></div>
+<p>The URL <a href="https://djdkduep62kz4nzx.onion.to">https://djdkduep62kz4nzx.onion.to</a> is definitely weird<sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup>. According to <a href="https://www.malware-traffic-analysis.net/2015/09/02/index.html">Malware Traffic Analysis</a> (who incidentally have great PCAP challenges!) the URL was linked in 2015 to the TeslaCrypt ransomware.<sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup> The server might have been temporarily compromised in 2015. However, now the site is inaccessible from either Tor2Web or Tor at the time of writing.</p>
+<div style="text-align:center"><img src="/2018/04/3-Tor2Web.png"alt="3-Tor2Web" style="border: #000000 1px outset"></div>
+<p>(As an aside the <code>.to</code> URL suffix with an hidden service indicates a Tor2Web address, which is a way for a user to access a Tor hidden service without running Tor. Dropping the <code>.to</code> will access the same site over the Tor network.)</p>
+<p>The remaining onion URLs (https:/01.graylady3jvrrxbe.onion and <a href="https://www.nytimes3xbfgragh.onion">https://www.nytimes3xbfgragh.onion</a>) both relate to our tested browsing of the New York Times hidden service. However the large amount of URL records from simply browsing two pages reinforces the caveats on using Bulk Extractor for anything but lead generation.</p>
+<h2 id="email-addresses">Email Addresses</h2>
+<p>The amount of noise in Bulk Extractor extends to other identifiers such as email. Even with only basic browsing, the file <code>email_domain_histogram.txt</code> has 218 different email domains.</p>
+<pre><code class="xml">dfir@LAPTOP:/mnt/c/BoH/output$ cat email_domain_histogram.txt
+# BANNER FILE NOT PROVIDED (-b option)
+# BULK_EXTRACTOR-Version: 1.5.5 ($Rev: 10844 $)
+# Feature-Recorder: email
+# Filename: Win10_14393_Tor_Closed.vmem
+# Histogram-File-Version: 1.1
+n=212   @eff.org
+n=40    @mozilla.org
+n=34    @torproject.org
+n=29    @gmail.com
+n=20    @ime.sy
+n=15    @mozilla.com
+n=15    @suscerte.gob.ve
+n=14    @chambersign.org
+n=12    @trustcentre.co.za
+n=10    @emas.me
+n=10    @globaltrust.info
+n=9     @diginotar.nl
+***snipped***</code></pre>
+<p>One way to identify email domains of interest is to look a the frequency of the domain in the full URLs for the major webmail providers. The output file <code>url_histogram.txt</code> provides a frequency of URLs which can then be grepped against major webmail providers.</p>
+<p>For Gmail we have two entries with low scores on the histogram (which may actually be mangled URLs concatenated together):</p>
+<pre><code class="xml">dfir@LAPTOP:/mnt/c/BoH/output$ cat url_histogram.txt | grep gmail
+n=1     http://by137w.bay137.mail.live.com/mail/hiplight.aspx?n=http://bl103w.blu103.mail.live.com/mail/inboxlight.aspx?n=http://by142w.bay142.mail.live.com/mail/inboxlight.aspx?n=http://by137w.bay137.mail.live.com/mail/inboxlight.aspx?.mail.live.com/mail/sendmessagelight.aspx?_ec=1&n=comerciodoouro@gmail.comola
+n=1     http://darkbreak.webcindario.comtong.pm2@gmail.comBank  (utf16=1)</code></pre>
+<p>There are similar low results for Hotmail and Yahoo, and some specialist providers like Tuta Nota or ProtonMail have no results. Searching for &lsquo;live.com&rsquo; produced a number of interesting entries, but not all appear to be related to email.</p>
+<pre><code class="xml">dfir@LAPTOP:/mnt/c/BoH/output$ cat url_histogram.txt | grep live.com
+n=24    https://xsts.auth.xboxlive.com  (utf16=21)
+n=21    https://login.live.com/ (utf16=19)
+n=20    https://login.live.com  (utf16=18)
+n=11    https://xsts.auth.xboxlive.com/ (utf16=11)
+n=8     https://onedrive.live.com/windows/      (utf16=5)
+n=7     http://auth.xboxlive.com
+n=7     http://xboxlive.com
+n=7     https://account.live.com/       (utf16=5)
+***snipped***</code></pre>
+<p>When we search for GMX we get a much larger and richer number of URLs, with much high scores in the histogram.</p>
+<pre><code class="xml">dfir@LAPTOP:/mnt/c/BoH/output$ cat url_histogram.txt | grep gmx
+n=56    https://navigator-bs.gmx.com
+n=46    https://3c-bs.gmx.com
+n=38    https://dl.gmx.com
+n=36    https://home.navigator-bs.gmx.com
+n=36    https://trackbar.navigator-bs.gmx.com
+n=27    https://mailderef.gmx.com
+n=26    https://dl.gmx.com/uim/container/generic_dfp_gmxcom_1.html#id=0#url=https%3A//mailderef.gmx.com/dl.gmx.com/uim/container/generic_dfp_gmxcom_1.html#lcid=1521372556900233436.54056410247
+n=21    https://3c-bs.gmx.com/mail/client/mail/sentconfirm;jsessionid=1E8359D02DBEE35F86F0FC0BDB82D44E-n1.bs08a?editorAction=NEW&mailId=tmai151d0045aebe9761&uc=SHOW_CONFIRMPAGE
+n=20    https://3c-bs.gmx.com/mail/client/mail/detail;jsessionid=1E8359D02DBEE35F86F0FC0BDB82D44E-n1.bs08a?5&mailId=tmai151cfee574b629f3&page=0&sort=sort-DATE-desc&folderId=tfol151997642113d811
+n=19    https://dl.gmx.com/uim/container/generic_dfp_gmxcom_1.html
+n=16    https://3c-bs.gmx.com/mail/client/mail/compose/html?editorAction=NEW    (utf16=1)
+n=14    https://navigator-bs.gmx.com/?sid=8f7b6d9796a1d87e18679305cba3fda03a827dbee2aa77e48455ce496cb3d5d7a81e4f34c4788802ecc6616ea4b28f69
+***snipped***</code></pre>
+<p>The results also show a variety of URL parameters including words like &lsquo;compose&rsquo;, &lsquo;session&rsquo; etc. which makes GMX mail more interesting. There are also references to parameter &lsquo;sid&rsquo;, which is likely a unique session identification hash. Testing on a throwaway GMX account indicates there likely is a new &lsquo;sid&rsquo; for every login.</p>
+<div style="text-align:center"><img src="/2018/04/3-GMX.png" alt="3-GMX" style="border: #000000 1px outset"></div>
+<p>Now we can go back to the <code>email.txt</code> file and look for GMX emails.</p>
+<pre><code class="xml">dfir@LAPTOP:/mnt/c/BoH/output$ cat email.txt | grep gmx
+dfir@LAPTOP:/mnt/c/BoH/output$</code></pre>
+<p>Nothing!</p>
+<p>In the tradition of memory forensics there is no record for any GMX email account. Despite our hypothetical user logging into GMX mail and reading and writing messages, sometimes data simply isn&rsquo;t in memory at the time of capture! This would be one to refer to the disk image or other sources of intelligence.</p>
+<h2 id="network-traffic">Network Traffic</h2>
+<p>Bulk extractor also carves network traffic data from memory, which can be interesting. This is saved as a <code>.pcap</code> file which can be read in tcpdump or Wireshark. Although for Tor traffic it is less of interest due to its encrypted nature and IP obfuscation.</p>
+<p>In our scenario, there is no additional information gleamed from the Volatility <code>netscan</code> results with the same IP address, 54.37.17.235, recorded in the (mostly malformed) pcap traffic. The IP 40.77.228.92 resolves back to Microsoft.</p>
+<div style="text-align:center"><img src="/2018/04/5-Wireshark.png" alt="5-Wireshark" style="border: #000000 1px outset"></div>
+<h2 id="traditional-data-carving">&lsquo;Traditional&rsquo; data carving</h2>
+<p>One hindrance to memory forensics is that &lsquo;traditional&rsquo; file carving usually doesn&rsquo;t provide good results. This kind of file carving looks for hexadecimal headers and footers to extract data and is commonly used in disk forensics. However, unlike disk forensics, memory is fragmented and not all of the data may be in memory at the times of capture. The &lsquo;bible&rsquo; of memory forensics explains this succinctly:</p>
+<blockquote>
+<p>Occasionally, people still attempt to reconstruct a file from a memory sample using traditional file carving tools, such as Scalpel&hellip;Unfortunately, most of these tools assume the file data is contiguous and that the media being analyzed contains a whole copy of the file&hellip;As a result except for files smaller than one page of memory, you are probably not going to extract the data you expect.</p>
+<p><em>The Art of Memory Forensics: Detecting Malware and Threats in Windows, Linux and Mac in Memory</em>, p.494</p>
+</blockquote>
+<p>So, if we tried, what would we get? <em>Foremost</em> is data carving utility which will carve picture, document, executables, ZIP/RAR, HTML or audio files. It is simple and quick to run and places each file type in output folders.</p>
+<p>Here I will attempt to carve for picture and HTML data.</p>
+<pre><code class="xml">dfir@LAPTOP:/mnt/c/BoH$ foremost -t jpg,htm,gif,png -v -i Win10_14393_Tor_Closed.vmem -o foremost
+Foremost version 1.5.7 by Jesse Kornblum, Kris Kendall, and Nick Mikus
+Audit File
+
+Foremost started at Tue May  1 09:31:44 2018
+Invocation: foremost -t jpg,htm,gif,png -v -i Win10_14393_Tor_Closed.vmem -o foremost
+Output directory: /mnt/c/BoH/foremost
+Configuration file: /etc/foremost.conf
+Processing: Win10_14393_Tor_Closed.vmem
+|------------------------------------------------------------------
+File: Win10_14393_Tor_Closed.vmem
+Start: Tue May  1 09:32:12 2018
+Length: 4 GB (4294967296 bytes)
+
+Num      Name (bs=512)         Size      File Offset     Comment
+
+0:      00009856.png           1 KB         5046368       (36 x 36)
+1:      00009859.png           1 KB         5048104       (48 x 48)
+2:      00092377.png          198 B        47297024       (50 x 50)
+3:      00092378.png          224 B        47298032       (44 x 44)
+4:      00092381.png          224 B        47299120       (44 x 44)
+5:      00092383.png          136 B        47300160       (16 x 16)
+6:      00104370.png          452 B        53437746       (16 x 16)
+7:      00104371.png         1005 B        53438301       (32 x 32)
+8:      00104373.png          485 B        53439397       (16 x 16)
+9:      00144140.png          209 B        73799772       (9 x 5)
+10:     00144141.png          215 B        73800560       (9 x 5)
+***snipped***
+560:    08269196_1.htm        236 B      4233828859
+561:    08269197.htm          269 B      4233829195
+562:    08269198.htm          247 B      4233829563
+563:    08269199.htm          250 B      4233829915
+564:    08269199_1.htm         3 KB      4233830267
+565:    08269206.htm          281 B      4233833931
+566:    08214113.gif           6 KB      4205626344       (1168 x 769)
+567:    08212180.png          353 B      4204636576       (310 x 150)
+568:    08212182.png          502 B      4204637616       (310 x 150)
+
+Finish: Tue May  1 09:32:33 2018
+
+569 FILES EXTRACTED
+
+jpg:= 1
+htm:= 41
+gif:= 23
+png:= 504
+
+Foremost finished at Tue May  1 09:32:33 2018</code></pre>
+<p>Data was &lsquo;found&rsquo; but as expected, the results are limited. No useful HTML or picture files were located. However, it did carve a number of small icons which could potentially be useful to either identify a hidden service of interest (e.g. a logo or a user avatar). For cases of child exploitation Foremost could be of greater interest, but ultimately it&rsquo;s not the solution.</p>
+<p>If we want to &lsquo;carve&rsquo; files in memory we can return to Volatility and use the <code>dumpfiles</code> plugin. The syntax is <code>vol.py -f &lt;filename&gt; --profile=&lt;profile&gt; dumpfiles -n -D ./&lt;output_path&gt; -r &lt;regex_value&gt;</code> Here the -n appends the name of the original file and -r is using a regular expression to limit the output.</p>
+<p>Results may still be limited. My attempts to locate HTML, GIF, JPG, and sqlite files all fail to locate any data.</p>
+<p>However turning to Windows system files, using <code>dumpfiles</code> against Event Logs produced a good output to examine.</p>
+<pre><code class="xml">dfir@LAPTOP:/mnt/c/BoH$ vol.py -f Win10_14393_Tor_Closed.vmem --profile=Win10x64_14393 dumpfiles -n -D ./dump -r .evtx
+Volatility Foundation Volatility Framework 2.6
+DataSectionObject 0xffff80814be1c460   908    \Device\HarddiskVolume1\Windows\System32\winevt\Logs\System.evtx
+SharedCacheMap 0xffff80814be1c460   908    \Device\HarddiskVolume1\Windows\System32\winevt\Logs\System.evtx
+DataSectionObject 0xffff80814be23080   908    \Device\HarddiskVolume1\Windows\System32\winevt\Logs\Application.evtx
+SharedCacheMap 0xffff80814be23080   908    \Device\HarddiskVolume1\Windows\System32\winevt\Logs\Application.evtx
+DataSectionObject 0xffff80814be24c80   908    \Device\HarddiskVolume1\Windows\System32\winevt\Logs\Security.evtx
+SharedCacheMap 0xffff80814be24c80   908    \Device\HarddiskVolume1\Windows\System32\winevt\Logs\Security.evtx
+***snipped***</code></pre>
+<p>Located in the Security Event log was a reference to <code>torbrowser-install-7.5.2_en-US.exe</code>.</p>
+<div style="text-align:center"><img src="/2018/05/10---security-log.jpg" alt="0---security-log" style="border: #000000 1px outset"></div>
+<p>As the log was only partially complete, as is common, and Windows Event Log Viewer failed load the log to view it natively. By reviewing baseline data (being logs from my Windows installation) and handy research previously done <a href="https://github.com/libyal/libevtx/blob/master/documentation/Windows%20XML%20Event%20Log%20(EVTX).asciidoc">here</a>, the key fields (for this log) can be broken down as follows:</p>
+<table>
+<thead>
+<tr>
+<th align="center">Offset   (decimal)</th>
+<th align="center">Data Type</th>
+<th align="center">Length (bytes)</th>
+<th align="center">Hex Data</th>
+<th align="center">Converted Data / Comment</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="center">0</td>
+<td align="center">Event Record   Signature</td>
+<td align="center">4</td>
+<td align="center">2A2A0000</td>
+<td align="center">Hex Signature</td>
+</tr>
+<tr>
+<td align="center">4</td>
+<td align="center">Event Record Size</td>
+<td align="center">4</td>
+<td align="center">60020000</td>
+<td align="center">608 bytes (LE)</td>
+</tr>
+<tr>
+<td align="center">8</td>
+<td align="center">Event Record   Identifier</td>
+<td align="center">8</td>
+<td align="center">D801000000000000</td>
+<td align="center">472 (LE)</td>
+</tr>
+<tr>
+<td align="center">16</td>
+<td align="center">Windows FILETIME   written</td>
+<td align="center">8</td>
+<td align="center">177D4A5BAABED301</td>
+<td align="center">18 March 2018, 11:15:00 UTC</td>
+</tr>
+<tr>
+<td align="center">24</td>
+<td align="center">Binary Data Header</td>
+<td align="center">4</td>
+<td align="center">0F010100</td>
+<td align="center">Hex Signature</td>
+</tr>
+<tr>
+<td align="center">118</td>
+<td align="center">Event ID</td>
+<td align="center">2</td>
+<td align="center">BE 12</td>
+<td align="center">4798</td>
+</tr>
+<tr>
+<td align="center">130</td>
+<td align="center">Windows FILETIME event   created</td>
+<td align="center">8</td>
+<td align="center">177D4A5BAABED301</td>
+<td align="center">18 March 2018, 11:15:00 UTC</td>
+</tr>
+<tr>
+<td align="center">171</td>
+<td align="center">Event Log Provider   Name</td>
+<td align="center">70</td>
+<td align="center">UTF-16</td>
+<td align="center">N/A</td>
+</tr>
+<tr>
+<td align="center">257</td>
+<td align="center">Event Log Channel</td>
+<td align="center">16</td>
+<td align="center">UTF-16</td>
+<td align="center">N/A</td>
+</tr>
+<tr>
+<td align="center">365</td>
+<td align="center">Target SID</td>
+<td align="center">28</td>
+<td align="center">010500000000000515000000 EB45C98E2A11D64863E30076E8030000</td>
+<td align="center">S-1-05-5-21-2395555307- 705812040-1221988650-1979769699-1000</td>
+</tr>
+<tr>
+<td align="center">393</td>
+<td align="center">Subject User SID</td>
+<td align="center">28</td>
+<td align="center">010500000000000515000000 EB45C98E2A11D64863E30076E8030000</td>
+<td align="center">S-1-05-5-21-2395555307- 705812040-1221988650-1979769699-1000</td>
+</tr>
+<tr>
+<td align="center">421</td>
+<td align="center">Subject User Name</td>
+<td align="center">8</td>
+<td align="center">UTF-16</td>
+<td align="center">N/A</td>
+</tr>
+<tr>
+<td align="center">431</td>
+<td align="center">Subject User   Domain</td>
+<td align="center">30</td>
+<td align="center">UTF-16</td>
+<td align="center">N/A</td>
+</tr>
+<tr>
+<td align="center">479</td>
+<td align="center">Caller process   name</td>
+<td align="center">116</td>
+<td align="center">UTF-16</td>
+<td align="center">N/A</td>
+</tr>
+<tr>
+<td align="center">604</td>
+<td align="center">Event Record   Size (Footer)</td>
+<td align="center">4</td>
+<td align="center">60020000</td>
+<td align="center">608 bytes (LE)</td>
+</tr>
+</tbody>
+</table>
+<p>Which corresponds to the event log fragment as follows:</p>
+<div class="center" style="text-align:center; width: 100%; height: 100%;" vspace="10"><img src="/2018/05/7---security-log.png" alt="7-Hex-Event-Log" style="border: #000000 1px outset"></div>
+<p>The actual event (in this circumstance) is not particularly interesting <a href="https://docs.microsoft.com/en-us/windows/security/threat-protection/auditing/event-4798">&lsquo;Event 4798 - A user&rsquo;s local group membership was enumerated&rsquo;</a>. The presence of the log and the FILETIME stamp provides another interesting data point for a timeline. It also provides additional information that the Tor Browser Bundle installer was located on <code>HarddiskVolume2</code>, which may or may not be the same USB as the installed files. The date stamp, 18 March 2018, 11:15:00 UTC, indicates that the timing is definitely consistent to the other timestamps identified in this analysis (e.g. from the $MFT).</p>
+<p>Having taken the time to parse out the hex in the event log fragment, I thought it might be useful to carve similar Event Log fragments via a script. The result is a simple Python script, <a href="https://github.com/mattnotmax/event_carver">event_carver.py</a>, which searches a binary file (usually a .evtx file that is corrupted or zero padded) and locates the event record signature <code>x\2Ax\2Ax\00x\00</code>. It will then parse and extract some key fields including the record offset within the file, event log ID, and timestamp. The event fragment is then dumped into an &lsquo;output&rsquo; folder for manual inspection.</p>
+<p>(It certainly doesn&rsquo;t appear to be as comprehensive as either <a href="https://github.com/williballenthin/EVTXtract">EVTXract</a> or <a href="https://github.com/williballenthin/python-evtx/">python-evtx</a> neither of which I have tested at this time.)</p>
+<p>The output looks as follows:</p>
+<pre><code class="xml">c:\Scripts\event_carver>python event_carver.py test.bin
+Located header at offset: 0x1200
+Located header at offset: 0x1cf0
+Located header at offset: 0x31200
+Located header at offset: 0x31b48
+Located header at offset: 0x31d78
+Located header at offset: 0x321f0
+Located header at offset: 0x32458
+**snipped**
+Located header at offset: 0x5f938
+Located header at offset: 0x5fc28
+Located header at offset: 0x60020
+Located header at offset: 0x60310
+
+Located 139 Windows Event Record fragments
+Event carver completed at 10:45:39, 08-May-2018</code></pre>
+<p>The output folder will appear as:</p>
+<pre><code class="xml">c:\Scripts\event_carver\output>dir /d /b
+events_summary.csv
+offset_0x1200_2018-03-08.bin
+offset_0x1cf0_2018-03-08.bin
+offset_0x31200_2018-03-07.bin
+offset_0x31b48_2018-03-07.bin
+offset_0x31d78_2018-03-07.bin
+**snipped**</code></pre>
+<p>The script should only be used as a first triage, as it&rsquo;s blindly looking at values that may be empty or corrupted. At this stage there is significant variability in the remaining binary content of the EVTX record so I haven&rsquo;t yet attempted to parse this data out. (Otherwise, I&rsquo;d never get this post out!)</p>
+<h2 id="summary">Summary</h2>
+<p>There is almost endless analysis that could be done with the Bulk Extractor output. Most likely (and useful) is to put the output into a word list which you can then run over the physical image or against password protected files. This could either be a selection of data, or through enabling the word list option on initial processing via <code>bulk extractor -e wordlist -o &lt;output directory&gt; &lt;source file&gt;</code>.</p>
+<p>Traditional data carving is unlikely to produce quality results, as the testing with Foremost demonstrated. Instead, using Volatility <code>dumpfiles</code> can assist.</p>
+<p>That&rsquo;s all for this two-part series on analysing Tor artefacts in memory images. In traditional DFIR fashion it started as looking at Tor and ended with carving event records. You never know where you end up!</p>
+<p>Please feel free to share your thoughts or comments at <a href="mailto:matt@bitofhex.com">matt@bitofhex.com</a> or via Twitter at <a href="https://twitter.com/mattnotmax">@mattnotmax</a>. Thanks for reading!</p>
+<h2 id="related-links">Related Links</h2>
+<p><a href="https://github.com/simsong/bulk_extractor">Bulk Extractor</a><br>
+<a href="http://foremost.sourceforge.net/">Foremost</a><br>
+<a href="http://www.digital-detective.net/digital-forensic-software/free-tools/">DCode</a><br>
+<a href="https://volatility-labs.blogspot.com.au/2015/01/incorporating-disk-forensics-with.html">Incorporating Disk Forensics with Memory Forensics - Bulk Extractor</a> (proof that everything old is new again!)<br>
+<a href="http://cheeky4n6monkey.blogspot.com.au/2017/08/monkey-unpacks-some-python.html">Monkey Unpacks Some Python</a> (thanks for the Python tips!)<br>
+<a href="https://github.com/williballenthin/python-evtx">python-evtx</a></p>
+<section class="footnotes" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn:1" role="doc-endnote">
+<p>Not a technical term to put in the final report! <a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:2" role="doc-endnote">
+<p>See <a href="https://www.malware-traffic-analysis.net/2015/09/02/index.html">https://www.malware-traffic-analysis.net/2015/09/02/index.html</a> <a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+</ol>
+</section>
+
+    </div>
+    <div class="article-footer">
+<blockquote class="mt-2x">
+  <ul class="post-copyright list-unstyled">
+    <li class="post-copyright-link hidden-xs">
+      <strong>Permalink: </strong>
+      <a href="https://bitofhex.github.io/2018/05/memory-forensics-tor-part-two/" title="Memory Forensics &amp; Tor (part two)" target="_blank" rel="external">https://bitofhex.github.io/2018/05/memory-forensics-tor-part-two/</a>
+    </li>
+    <li class="post-copyright-license">
+      <strong>License：</strong><a href="http://creativecommons.org/licenses/by/4.0/deed.zh" target="_blank" rel="external">CC BY 4.0 CN</a>
+    </li>
+  </ul>
+</blockquote>
+
+<div class="panel panel-default panel-badger">
+  <div class="panel-body">
+    <figure class="media">
+      <div class="media-left">
+        <a href="https://twitter.com/mattnotmax" target="_blank" class="img-burn thumb-sm visible-lg">
+          <img src="https://bitofhex.github.io/logo.png" class="img-rounded w-full" alt="">
+        </a>
+      </div>
+      <div class="media-body">
+        <h3 class="media-heading"><a href="https://twitter.com/mattnotmax" target="_blank"><span class="text-dark">bit_of_hex</span><small class="ml-1x">digital forensics | incident response</small></a></h3>
+        <div>476c616420796f7520617265207468617420696e74657265737465642e204861766520612067726561742064617921</div>
+      </div>
+    </figure>
+  </div>
+</div>
+    </div>
+  </article>
+
+</div><nav class="bar bar-footer clearfix" data-stick-bottom>
+    <div class="bar-inner">
+        <ul class="pager pull-left">
+            <li class="prev">
+                <a href="https://bitofhex.github.io/2018/04/volatility-and-tor/" title="Memory Forensics &amp; Tor"><i
+                        class="icon icon-angle-left"
+                        aria-hidden="true"></i><span>&nbsp;&nbsp;Older</span></a>
+            </li>
+            <li class="next">
+                <a href="https://bitofhex.github.io/2018/05/cyberchef/"
+                    title="CyberChef &amp; DFIR"><span>Newer&nbsp;&nbsp;</span><i
+                        class="icon icon-angle-right" aria-hidden="true"></i></a>
+            </li>
+            
+            <li class="toggle-toc">
+                <a class="toggle-btn collapsed" data-toggle="collapse" href="#collapseToc" aria-expanded="false"
+                    title="Catalogue" role="button">
+                    <span>[&nbsp;</span><span>Catalogue</span>
+                    <i class="text-collapsed icon icon-anchor"></i>
+                    <i class="text-in icon icon-close"></i>
+                    <span>]</span>
+                </a>
+            </li>
+        </ul>
+        <div class="bar-right">
+            <div class="share-component" data-sites="facebook,twitter,linkedin,google"
+                data-mobile-sites="facebook,twitter,linkedin,google"></div>
+        </div>
+    </div>
+</nav>
+
+</main><footer class="footer" itemscope itemtype="http://schema.org/WPFooter">
+<ul class="social-links">
+    <li><a href="https://github.com/mattnotmax" target="_blank" title="github" data-toggle=tooltip data-placement=top >
+            <i class="icon icon-github"></i></a></li>
+    <li><a href="https://bitofhex.github.io/index.xml" target="_blank" title="rss" data-toggle=tooltip data-placement=top >
+            <i class="icon icon-rss"></i></a></li>
+    <li><a href="https://twitter.com/mattnotmax" target="_blank" title="twitter" data-toggle=tooltip data-placement=top >
+            <i class="icon icon-twitter"></i></a></li>
+</ul>
+  <div class="copyright">
+    &copy;2018  -
+    2020
+    <div class="publishby">
+        Theme by <a href="https://github.com/xiaoheiAh" target="_blank"> xiaoheiAh </a>base on<a href="https://github.com/xiaoheiAh/hugo-theme-pure" target="_blank"> pure</a>.
+    </div>
+  </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_SVG"></script>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+            showMathMenu: false, //disables context menu
+            tex2jax: {
+            inlineMath: [ ['$','$'], ['\\(','\\)'] ]
+           }
+    });
+</script>
+
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.4.1/dist/jquery.min.js"></script>
+<script>
+    window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')
+</script>
+<script type="text/javascript" src="https://cdn.staticfile.org/highlight.js/9.15.10/highlight.min.js"></script>
+<script type="text/javascript" src="https://cdn.staticfile.org/highlight.js/9.15.10/languages/python.min.js" defer></script>
+<script type="text/javascript" src="https://cdn.staticfile.org/highlight.js/9.15.10/languages/javascript.min.js" defer></script>
+<script type="text/javascript" src="https://cdn.staticfile.org/highlight.js/9.15.10/languages/powershell.min.js" defer></script><script>
+    hljs.configure({
+        tabReplace: '    ', 
+        classPrefix: ''     
+        
+    })
+    hljs.initHighlightingOnLoad();
+</script>
+<script src="https://bitofhex.github.io/js/application.min.bdeb64b910570b6c41badc6a05b7afb0c8ad9efd8525de3c7257d59e786326a3.js"></script>
+<script src="https://bitofhex.github.io/js/plugin.min.51ff8c7317566f82259170fa36e09c4493adc9b9378b427a01ad3f017ebac7dd.js"></script>
+
+<script>
+    (function (window) {
+        var INSIGHT_CONFIG = {
+            TRANSLATION: {
+                POSTS: 'Posts',
+                PAGES: 'Pages',
+                CATEGORIES: 'Categories',
+                TAGS: 'Tags',
+                UNTITLED: '(Untitled)',
+            },
+            ROOT_URL: 'https:\/\/bitofhex.github.io\/',
+            CONTENT_URL: 'https:\/\/bitofhex.github.io\/\/searchindex.json ',
+        };
+        window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+    })(window);
+</script>
+<script type="text/javascript" src="https://bitofhex.github.io/js/insight.min.a343cd9a5a7698336b28ef3a7c16a3a1b1d2d5fb17dc8ed04022bbe08cc5459073a15bdafa3a8a58cdd56080784bdd69fa70b1ae8597565c799c57ed00f0e120.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.min.js"></script>
+<script>
+    tocbot.init({
+        
+        tocSelector: '.js-toc',
+        
+        contentSelector: '.js-toc-content',
+        
+        headingSelector: 'h1, h2, h3',
+        
+        hasInnerContainers: true,
+    });
+</script>
+
+
+  </body>
+</html>

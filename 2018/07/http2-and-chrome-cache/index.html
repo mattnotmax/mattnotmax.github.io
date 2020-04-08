@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <title>
+        Dude! Where&#39;s my HTTP/2? - bit_of_hex
+      </title>
+    <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport"
+    content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="Cache-Control" content="no-transform" />
+  <meta http-equiv="Cache-Control" content="no-siteapp" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="format-detection" content="telephone=no,email=no,adress=no">
+  
+  <meta name="theme-color" content="#000000" />
+  
+  <meta http-equiv="window-target" content="_top" />
+  
+  
+  <meta name="description" content="HTTP/2 is fundamentally different from HTTP/1.x; but it is not some edge-case of internet traffic. Figures that I found from April 2016 indicated it was 68% of web-traffic. It is supported by the major browsers, and even the lowly bit_of_hex blog is sent via HTTP/2. To check, the browsers generally identify HTTP/2 traffic as &amp;lsquo;h2&amp;rsquo; in their developer tools.
+ HTTP/2 is a binary protocol (as opposed to HTTP/1.1) and based around &amp;lsquo;frames&amp;rsquo; which include types such as HEADERS, DATA, SETTINGS, and WINDOW_UPDATE." />
+  <meta name="generator" content="Hugo 0.68.3 with theme pure" />
+  <title>Dude! Where&#39;s my HTTP/2? - bit_of_hex</title>
+  
+  
+  <link rel="stylesheet" href="https://bitofhex.github.io/css/style.min.c4bc7071f132c964c2116bca53b392933f377e5ca7b7051ed245187c621a2d3e.css">
+  
+  <link rel="stylesheet" href="https://cdn.staticfile.org/highlight.js/9.15.10/styles/github.min.css" async>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.css" async>
+  <meta property="og:title" content="Dude! Where&#39;s my HTTP/2?" />
+<meta property="og:description" content="HTTP/2 is fundamentally different from HTTP/1.x; but it is not some edge-case of internet traffic. Figures that I found from April 2016 indicated it was 68% of web-traffic. It is supported by the major browsers, and even the lowly bit_of_hex blog is sent via HTTP/2. To check, the browsers generally identify HTTP/2 traffic as &lsquo;h2&rsquo; in their developer tools.
+ HTTP/2 is a binary protocol (as opposed to HTTP/1.1) and based around &lsquo;frames&rsquo; which include types such as HEADERS, DATA, SETTINGS, and WINDOW_UPDATE." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://bitofhex.github.io/2018/07/http2-and-chrome-cache/" />
+<meta property="article:published_time" content="2018-07-22T02:43:42+00:00" />
+<meta property="article:modified_time" content="2018-07-22T02:43:42+00:00" />
+<meta itemprop="name" content="Dude! Where&#39;s my HTTP/2?">
+<meta itemprop="description" content="HTTP/2 is fundamentally different from HTTP/1.x; but it is not some edge-case of internet traffic. Figures that I found from April 2016 indicated it was 68% of web-traffic. It is supported by the major browsers, and even the lowly bit_of_hex blog is sent via HTTP/2. To check, the browsers generally identify HTTP/2 traffic as &lsquo;h2&rsquo; in their developer tools.
+ HTTP/2 is a binary protocol (as opposed to HTTP/1.1) and based around &lsquo;frames&rsquo; which include types such as HEADERS, DATA, SETTINGS, and WINDOW_UPDATE.">
+<meta itemprop="datePublished" content="2018-07-22T02:43:42&#43;00:00" />
+<meta itemprop="dateModified" content="2018-07-22T02:43:42&#43;00:00" />
+<meta itemprop="wordCount" content="2152">
+
+
+
+<meta itemprop="keywords" content="chrome,http/2," /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Dude! Where&#39;s my HTTP/2?"/>
+<meta name="twitter:description" content="HTTP/2 is fundamentally different from HTTP/1.x; but it is not some edge-case of internet traffic. Figures that I found from April 2016 indicated it was 68% of web-traffic. It is supported by the major browsers, and even the lowly bit_of_hex blog is sent via HTTP/2. To check, the browsers generally identify HTTP/2 traffic as &lsquo;h2&rsquo; in their developer tools.
+ HTTP/2 is a binary protocol (as opposed to HTTP/1.1) and based around &lsquo;frames&rsquo; which include types such as HEADERS, DATA, SETTINGS, and WINDOW_UPDATE."/>
+
+  <!--[if lte IE 9]>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+    <![endif]-->
+
+  <!--[if lt IE 9]>
+      <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+    <![endif]-->
+
+</head>
+  </head>
+
+  
+  
+
+  <body class="main-center theme-black" itemscope itemtype="http://schema.org/WebPage"><header class="header" itemscope itemtype="http://schema.org/WPHeader">
+    <div class="slimContent">
+      <div class="navbar-header">
+        <div class="profile-block text-center">
+          <a id="avatar" href="https://twitter.com/mattnotmax" target="_blank">
+            <img class="img-circle img-rotate" src="https://bitofhex.github.io/logo.png" width="200" height="200">
+          </a>
+          <h2 id="name" class="hidden-xs hidden-sm">bit_of_hex</h2>
+          <h3 id="title" class="hidden-xs hidden-sm hidden-md">digital forensics | incident response</h3>
+          <small id="location" class="text-muted hidden-xs hidden-sm"><i class="icon icon-map-marker"></i>Melbourne, Australia</small>
+        </div><div class="search" id="search-form-wrap">
+    <form class="search-form sidebar-form">
+        <div class="input-group">
+            <input type="text" class="search-form-input form-control" placeholder="Search" />
+            <span class="input-group-btn">
+                <button type="submit" class="search-form-submit btn btn-flat" onclick="return false;"><i
+                        class="icon icon-search"></i></button>
+            </span>
+        </div>
+        <div class="ins-search">
+            <div class="ins-search-mask"></div>
+            <div class="ins-search-container">
+                <div class="ins-input-wrapper">
+                    <input type="text" class="ins-search-input" placeholder="Type something..."
+                        x-webkit-speech />
+                    <button type="button" class="close ins-close ins-selectable" data-dismiss="modal"
+                        aria-label="Close"><span aria-hidden="true">×</span></button>
+                </div>
+                <div class="ins-section-wrapper">
+                    <div class="ins-section-container"></div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+        <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#main-navbar" aria-controls="main-navbar" aria-expanded="false">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+      </div>
+      <nav id="main-navbar" class="collapse navbar-collapse" itemscope itemtype="http://schema.org/SiteNavigationElement" role="navigation">
+        <ul class="nav navbar-nav main-nav">
+            <li class="menu-item menu-item-home">
+                <a href="/">
+                    <i class="icon icon-home-fill"></i>
+                  <span class="menu-title">Home</span>
+                </a>
+            </li>
+            <li class="menu-item menu-item-archives">
+                <a href="/posts/">
+                    <i class="icon icon-archives-fill"></i>
+                  <span class="menu-title">Archives</span>
+                </a>
+            </li>
+            <li class="menu-item menu-item-tags">
+                <a href="/tags/">
+                    <i class="icon icon-tags"></i>
+                  <span class="menu-title">Tags</span>
+                </a>
+            </li>
+            <li class="menu-item menu-item-about">
+                <a href="/about/">
+                    <i class="icon icon-cup-fill"></i>
+                  <span class="menu-title">About</span>
+                </a>
+            </li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+<aside class="sidebar" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    
+      
+<div class="widget">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget-body">
+        <ul class="recent-post-list list-unstyled no-thumbnail">
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
+                        <a href="https://bitofhex.github.io/2020/02/sapphire-mushroom-lnk-files/" class="title">Suspected Sapphire Mushroom (APT-C-12) malicious LNK files</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2020-02-09 23:54:19 &#43;0000 UTC" itemprop="datePublished">2020-02-09</time>
+                    </p>
+                </div>
+            </li>
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
+                        <a href="https://bitofhex.github.io/2019/11/say-cheese-an-analysis-of-foto-lnk/" class="title">&#34;Say Cheese!&#34; An analysis of foto.lnk</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2019-11-16 16:46:26 &#43;0000 UTC" itemprop="datePublished">2019-11-16</time>
+                    </p>
+                </div>
+            </li>
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
+                        <a href="https://bitofhex.github.io/2019/07/deriving-intelligence-from-lnk-files/" class="title">Deriving intelligence from LNK files</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2019-07-15 02:14:48 &#43;0000 UTC" itemprop="datePublished">2019-07-15</time>
+                    </p>
+                </div>
+            </li>
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
+                        <a href="https://bitofhex.github.io/2019/02/base64-encoded-signatures/" class="title">Base64 Encoded File Signatures</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2019-02-19 00:06:06 &#43;0000 UTC" itemprop="datePublished">2019-02-19</time>
+                    </p>
+                </div>
+            </li>
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
+                        <a href="https://bitofhex.github.io/2019/01/attack-and-singapore-breach/" class="title">ATT&amp;CKing the Singapore Health Data Breach</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2019-01-12 17:53:26 &#43;0000 UTC" itemprop="datePublished">2019-01-12</time>
+                    </p>
+                </div>
+            </li>
+        </ul>
+    </div>
+</div>
+  </div>
+</aside>
+
+    
+    
+<aside class="sidebar sidebar-toc collapse" id="collapseToc" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    <h4 class="toc-title">Catalogue</h4>
+    <nav id="toc" class="js-toc toc">
+
+    </nav>
+  </div>
+</aside>
+<main class="main" role="main"><div class="content">
+  <article id="-http2-and-chrome-cache" class="article article-type-" itemscope
+    itemtype="http://schema.org/BlogPosting">
+    
+    <div class="article-header">
+      <h1 itemprop="name">
+  <a
+    class="article-title"
+    href="/2018/07/http2-and-chrome-cache/"
+    >Dude! Where&#39;s my HTTP/2?</a
+  >
+</h1>
+
+      <div class="article-meta">
+        
+<span class="article-date">
+  <i class="icon icon-calendar-check"></i>&nbsp;
+<a href="https://bitofhex.github.io/2018/07/http2-and-chrome-cache/" class="article-date">
+  <time datetime="2018-07-22 02:43:42 &#43;0000 UTC" itemprop="datePublished">2018-07-22</time>
+</a>
+</span>
+  
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>&nbsp;
+    <a class="article-tag-link" href="/tags/chrome/"> chrome </a>
+    <a class="article-tag-link" href="/tags/http/2/"> http/2 </a>
+  </span>
+
+        <span class="post-comment"><i class="icon icon-comment"></i>&nbsp;<a href="/2018/07/http2-and-chrome-cache/#comments"
+            class="article-comment-link">Comments</a></span>
+      </div>
+    </div>
+    <div class="article-entry marked-body js-toc-content" itemprop="articleBody">
+      <p>HTTP/2 is fundamentally different from HTTP/1.x; but it is not some edge-case of internet traffic. <a href="https://www.keycdn.com/blog/http2-statistics/">Figures that I found</a> from April <em>2016</em> indicated it was 68% of web-traffic. It is supported by the major browsers, and even the lowly bit_of_hex blog is sent via HTTP/2. To check, the browsers generally identify HTTP/2 traffic as &lsquo;h2&rsquo; in their developer tools.</p>
+<div style="text-align:center"><img src="/2018/07/bit_of_hex_h2_callout.jpg" alt="bit_of_hex_h2_callout" style="border: #000000 1px outset"></div>  
+<p>HTTP/2 is a binary protocol (as opposed to HTTP/1.1) and based around &lsquo;frames&rsquo; which include types such as HEADERS, DATA, SETTINGS, and WINDOW_UPDATE. Communication occurs over a single TCP connection and may include a number of bidirectional &lsquo;streams&rsquo;. Each uniquely identified stream can carry bidirectional &lsquo;messages&rsquo;. Streams operate independently so a stalled request does not affect other request/responses. Apart from <a href="https://tools.ietf.org/html/rfc7540">RFC 7540</a> a great resource is <a href="https://www.igvita.com/">Ilya Grigorik&rsquo;s</a> book <a href="https://hpbn.co/">High Performance Browser Networking</a> published by O&rsquo;Reilly Media.</p>
+<p>I&rsquo;ve been examining the mechanics of the HTTP/2 protocol. Previously, I identified <a href="https://bitofhex.com/2018/07/02/chrome-cache-and-http2/">Chrome incorrectly tags HTTP/2 server response headers as &lsquo;HTTP/1.1&rsquo;</a> when saving data to the disk cache. However, another particular aspect caught my attention: HTTP/2 push. This functionality in HTTP/2 seems quite interesting. The RFC describes it as follows:</p>
+<blockquote>
+<p>HTTP/2 adds a new interaction mode whereby a server can push responses to a client&hellip;Server push allows a server to speculatively send data to a client that the server anticipates the client will need, trading off some network usage against a potential latency gain.</p>
+</blockquote>
+<p>So essentially, a server can &lsquo;push&rsquo; data to a client without a formal &lsquo;request&rsquo;? Of course, the evil part of me said, &lsquo;Muhahah, I could send an evil file!&rdquo; Then the part of me that might be in court said &lsquo;Hang on, what happens if I push something to the client? Where do it go?&rsquo;</p>
+<p>I want to try to answer the following questions:</p>
+<ul>
+<li>What does the HTTP/2 push request/response look like from both the client and server?</li>
+<li>How does the browser handle HTTP/2 pushed data before it is actually used by the web-page?</li>
+<li>Could a malicious server push illicit/unwanted data to the browser disk cache through HTTP/2 server push?</li>
+<li>Can host or network forensics identify HTTP/2 pushed data?</li>
+</ul>
+<hr>
+<h3 id="forensic-testing-of-http2-push">Forensic Testing of HTTP/2 Push</h3>
+<p>For testing, I set up a simple two-page website (<a href="https://zabul.net">https://zabul.net</a> - thanks for cheap domain names!) which delivered content over HTTP/2. The first page displayed one image file but actually pushed two additional image files. The second page used these &lsquo;pushed&rsquo; files. <em>Usually</em>, the pushed content wouldn&rsquo;t be divided between multiple pages; however, this is a good way to experiment with HTTP/2 push under controlled conditions. Doing this testing also allowed me to demonstrate my highly (un)skilled HTML coding.<sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup></p>
+<div style="text-align:center"><img src="/2018/07/zabul_pages.jpg" alt="zabul_pages" style="border: #000000 1px outset"></div>
+<p>The testing setup was as follows:</p>
+<ul>
+<li>The web server was run through a Digital Ocean droplet with Ubuntu 18.03, Ngnix 1.14.0 and Let&rsquo;s Encrypt TLS certificate. The client was a virtual machine running Windows 10x64 (1803) with Chrome 67.0.3369.99 (x64).</li>
+<li>Page 1 of the web server sends one picture &lsquo;normally&rsquo; called <code>cat_no_push.jpg</code> and two pictures via HTTP/2 push, called <code>cat-pushed_1.jpg</code> and <code>cat-pushed_2.jpg</code>.</li>
+<li>Page 2 of the web server then loads the two pushed files from Page 1.</li>
+</ul>
+<hr>
+<h3 id="http2-push-mechanics">HTTP/2 Push Mechanics</h3>
+<p>A HTTP/2 push is initiated through a PUSH_PROMISE frame which identifies the headers of the data to be pushed. If accepted, the server can then push the data in a separate stream. Chrome gives a user complete insight into the HTTP/2 requests under chrome://net-internals. The simplest diagram I found displaying the mechanics of HTTP/2 push was from a presentation by Ilya Grigorik <a href="https://www.slideshare.net/hustwj/http-20-tokyo">here</a>.</p>
+<div style="text-align:center"><img src="/2018/07/http2_push_overview.jpg" alt="[http2_push_overview" style="border: #000000 1px outset"></div>
+<p>So let&rsquo;s dive in and take a look&hellip;</p>
+<h3 id="what-does-the-http2-push-requestresponse-look-like-from-both-the-client-and-server">What does the HTTP/2 push request/response look like from both the client and server?</h3>
+<p>From the web-server the Nginx logs look as expected. When &lsquo;Page 1&rsquo; loads we have four entries:</p>
+<pre><code class="xml">203.0.113.1 - - [30/Jun/2018:03:56:38 +0000] "GET / HTTP/2.0" 200 246 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36"
+203.0.113.1 - - [30/Jun/2018:03:56:38 +0000] "GET /cat-pushed_1.jpg HTTP/2.0" 200 5919 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36"
+203.0.113.1 - - [30/Jun/2018:03:56:38 +0000] "GET /cat-pushed_2.jpg HTTP/2.0" 200 94985 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36"
+203.0.113.1 - - [30/Jun/2018:03:56:38 +0000] "GET /cat_no_push.jpg HTTP/2.0" 200 104154 "https://zabul.net/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36"
+</code></pre>
+<p>Some observations of the logs from page 1:</p>
+<ul>
+<li>There is nothing identifiable to indicate that the data has been &lsquo;pushed&rsquo; (apart from the file names);</li>
+<li>The logs note it was sent via &lsquo;HTTP/2.0&rsquo; so an understanding of the RFC would need to be required to know that server push exists; and</li>
+<li>The pushed JPEG files were sent prior to the single required file (which is part of the push mechanics).</li>
+</ul>
+<p>When page 2 loads we have the following single entry is added to the logs:</p>
+<pre><code class="xml">203.0.113.1 - - [30/Jun/2018:03:59:00 +0000] "GET /2.html HTTP/2.0" 200 173 "https://zabul.net/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36"
+</code></pre>
+<p>From this entry:</p>
+<ul>
+<li>An astute observer looking in isolation might wonder where the JPEG files were; however, this can be matched with the immediately preceding log entries; and</li>
+<li>There is still nothing (as expected) to indicate data was pushed to the client.</li>
+</ul>
+<p>Lastly the Nginx configuration file has the complete picture with lines 7 &amp; 8 commencing with <code>http2_push</code> identifying the pushed data. <sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup></p>
+<pre><code class="xml">server {
+	listen 443 ssl http2 default_server;
+	listen [::]:443 http2 default_server;
+
+	root /var/www/html;
+
+	server_name zabul.net;
+
+	location = /index.html {
+		http2_push /cat-pushed_1.jpg;
+		http2_push /cat-pushed_2.jpg;
+	}
+
+	ssl_certificate /etc/letsencrypt/live/zabul.net/fullchain.pem; # managed by Certbot
+        ssl_certificate_key /etc/letsencrypt/live/zabul.net/privkey.pem; # managed by Certbot
+        ssl_dhparam  /etc/letsencrypt/live/zabul.net/dhparam.pem;
+}
+
+server {
+	listen 80;
+	listen [::]:80;
+	server_name zabul.net;
+	return 301 https://$server_name$request_uri;
+}
+</code></pre>
+<p>From the client side on Chrome, it gets a little better. Chrome provides a great array of tools to inspect web-pages and traffic. One tool is chrome://net-internals which allows HTTP/2 traffic to be dissected.</p>
+<p>When loading page 1, Chrome identifies &lsquo;Pushed&rsquo; as &lsquo;2&rsquo; and &lsquo;Unclaimed push&rsquo; as &lsquo;2&rsquo;. Clicking through to page 2 indicates that &lsquo;Pushed&rsquo; remains &lsquo;2&rsquo; and &lsquo;Pushed and claimed&rsquo; is now &lsquo;2&rsquo;.</p>
+<div style="text-align:center"><img src="/2018/07/chrome_http_2.jpg" alt="chrome_http_2" style="border: #000000 1px outset"></div>
+<p>Chrome also provides the ability to observe the raw HTTP/2 headers which clearly identify the PUSH_PROMISE traffic is sent prior to the image used on page 1:</p>
+<pre><code class="xml">896: HTTP2_SESSION
+zabul.net:443 (DIRECT)
+Start Time: 2018-06-30 13:57:03.177
+
+t=348075 [st=   0] +HTTP2_SESSION  [dt=?]
+                    --> host = "zabul.net:443"
+                    --> proxy = "DIRECT"
+t=348075 [st=   0]    HTTP2_SESSION_INITIALIZED
+                      --> protocol = "h2"
+                      --> source_dependency = 894 (SOCKET)
+
+***snipped***
+
+t=348368 [st= 293]    HTTP2_SESSION_RECV_PUSH_PROMISE
+                      --> :method: GET
+                          :path: /cat-pushed_1.jpg
+                          :scheme: https
+                          :authority: zabul.net
+                          accept-encoding: gzip, deflate, br
+                          accept-language: en-US,en;q=0.9
+                          user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36
+                      --> id = 1
+                      --> promised_stream_id = 2
+t=348368 [st= 293]    HTTP2_STREAM_SEND_PRIORITY
+                      --> exclusive = true
+                      --> parent_stream_id = 1
+                      --> stream_id = 2
+                      --> weight = 110
+t=348368 [st= 293]    HTTP2_SESSION_RECV_PUSH_PROMISE
+                      --> :method: GET
+                          :path: /cat-pushed_2.jpg
+                          :scheme: https
+                          :authority: zabul.net
+                          accept-encoding: gzip, deflate, br
+                          accept-language: en-US,en;q=0.9
+                          user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36
+                      --> id = 1
+                      --> promised_stream_id = 4
+t=348368 [st= 293]    HTTP2_STREAM_SEND_PRIORITY
+                      --> exclusive = true
+                      --> parent_stream_id = 2
+                      --> stream_id = 4
+                      --> weight = 110
+
+***snipped***
+
+t=348395 [st= 320]    HTTP2_SESSION_SEND_HEADERS
+                      --> exclusive = true
+                      --> fin = true
+                      --> has_priority = true
+                      --> :method: GET
+                          :authority: zabul.net
+                          :scheme: https
+                          :path: /cat_no_push.jpg
+                          user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36
+                          accept: image/webp,image/apng,image/*,*/*;q=0.8
+                          referer: https://zabul.net/
+                          accept-encoding: gzip, deflate, br
+                          accept-language: en-US,en;q=0.9
+                      --> parent_stream_id = 0
+                      --> source_dependency = 900 (HTTP_STREAM_JOB)
+                      --> stream_id = 3
+                      --> weight = 147</code></pre>
+<hr>
+<h3 id="how-does-the-browser-handle-http2-pushed-data-before-it-is-actually-used-by-the-web-page">How does the browser handle HTTP/2 pushed data before it is actually used by the web-page?</h3>
+<p>This question proved to be more difficult to determine. Initially I hypothesised pushed data would be saved to the disk cache before it was used (i.e. when page 1 was accessed). However, testing with Nirsoft and Hindsight indicated the pushed JPEG files were saved at the time Page 2 was accessed.</p>
+<p>Page 1 cache logs were as follows:</p>
+<div style="text-align:center"><img src="/2018/07/nirsoft_page1.jpg" alt="[nirsoft_page1" style="border: #000000 1px outset"></div>
+<p>Page 2 cache logs were as follows:</p>
+<div style="text-align:center"><img src="/2018/07/nirsoft_page2.jpg" alt="nirsoft_page2" style="border: #000000 1px outset"></div>
+<p>One small indicator is that the server response headers will note the date and time it was <em>pushed</em> to the client, so in my case, where there is a significant difference between accessing page 1 and page 2, the pushed data can be identified as anomalous.</p>
+<p>So, instead of the disk cache forensic tools, I tried to identify if a temporary file was created. Using SysInternals Process Monitor and Regshot I monitored changes to the file system and registry but couldn&rsquo;t identify any data of interest.</p>
+<p>Lastly, I undertook some Googling. Eventually I found an email thread between Chromium developers which seemed to explain what was happening. This <a href="https://groups.google.com/a/chromium.org/forum/#!topic/loading-dev/GoONR_xSGJ4">dated 2006 thread</a> discussing HTTP/2 push confirmed the push resource sits in the memory cache rather than written to the disk cache. Here two Chromium developers explain the mechanics as follows:</p>
+<blockquote>
+<p>The net stack is structured so that the the (sic) cache transaction layer generates network transactions when needed.   For server push, the layering means that when pushed resources arrive there isn&rsquo;t an obvious way for the net layer to interact with the cache.   When the page &ldquo;uses&rdquo; the a (sic) pushed resource, the net layer intercepts the request and supplies the pushed resource from memory.  This is transparent to the cache layer, so the resource will be stored in the http cache as usual as part of the cache transaction.</p>
+</blockquote>
+<p>and</p>
+<blockquote>
+<p>Pushed streams sit deep in the bowels of the //net stack, in the browser process, in memory, as part of SpdySession. When PUSH streams come along on a session, we drain the frame from the SpdySession (because we have to, to avoid HOL), and drop it into a SpdyStream. That SpdyStream will later (potentially) be claimed by a request, at which point, we replay the frames from the SpdyStream</p>
+</blockquote>
+<p>So, while difficult to confirm from a forensic perspective, the pushed data resides in memory until claimed. While I&rsquo;m no software developer, if needed, the push mechanics can be reviewed in the Chromium source code. I&rsquo;m not entirely comfortable with my own explanation, mainly due to the lack of contemporary information. So if there are better resources or testing available then please let me know.</p>
+<hr>
+<h3 id="could-a-malicious-server-push-illicitunwanted-data-to-the-browser-disk-cache-through-http2-server-push">Could a malicious server push illicit/unwanted data to the browser disk cache through HTTP/2 server push?</h3>
+<p>From my testing the answer is &lsquo;no&rsquo;. Based on the comments from Chrome developers this scenario was considered. If malicious data was pushed to the disk and then Chrome identified the site to be malicious and blocked it, the data would still have been pushed - which is not a good security outcome. Chrome developers also envisaged a problem where pushed data could potentially be continually pushed to disk even if the page was canceled.</p>
+<hr>
+<h3 id="can-host-or-network-forensics-identify-http2-pushed-data">Can host or network forensics identify HTTP/2 pushed data?</h3>
+<p>Yes and no.</p>
+<p>Inspection of the network traffic will clearly identify the PUSH_PROMISE data either in the Chrome <code>net-internal</code> logs or with Wireshark. Note you&rsquo;ll need to dump the TLS session keys to decrypt the data.</p>
+<p>Here in Wireshark the PUSH_PROMISE data is observed:</p>
+<div style="text-align:center"><img src="/2018/07/wireshark_1.jpg" alt="wireshark_1" style="border: #000000 1px outset"></div>
+<p>Here the actual pushed JPEG can be carved from the packet capture:</p>
+<div style="text-align:center"><img src="/2018/07/wireshark_2.jpg" alt="wireshark_2" style="border: #000000 1px outset"></div>
+<p>Host forensics is much more difficult to identify; but it actually might not be <em>necessary</em>. As the pushed data is not written to the disk cache until it is actually used by Chrome, there is no likely situation where there would be unused disk artefacts left.</p>
+<p>However, if you were keen to try and identify HTTP/2 pushed data consider the following:</p>
+<ul>
+<li>Read my previous post <a href="https://bitofhex.com/2018/07/02/chrome-cache-and-http2/">here</a> to be aware Chrome incorrectly labels HTTP/2 traffic as HTTP/1.1. Therefore, the cached data will not be explicitly identifiable as HTTP/2 (until this bug is fixed by Google); and</li>
+<li>Look for differences between cache artefact date and time and server response header date and time which may indicate the data was pushed. However, given most pushed data will likely be used on the same page the time difference (if any) might be negligible.</li>
+</ul>
+<hr>
+<h3 id="conclusion">Conclusion</h3>
+<p>Ultimately, while there is no &lsquo;forensic issue&rsquo; with HTTP/2 push and Chrome, it is useful to know and understand how HTTP/2 push mechanics work.<sup id="fnref:3"><a href="#fn:3" class="footnote-ref" role="doc-noteref">3</a></sup> It is also useful to know how Chrome (correctly) handles pushed data if you ever get asked those famous &lsquo;so is it possible&hellip;&rsquo; questions by a lawyer.</p>
+<p>This is definitely not the &lsquo;be-all-and-end-all&rsquo; of HTTP/2 push. If you have any questions or comments, please feel free to contact me at <a href="mailto:matt@bitofhex.com">matt@bitofhex.com</a> or on Twitter at <a href="https://twitter.com/mattnotmax">@mattnotmax</a>.</p>
+<section class="footnotes" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn:1" role="doc-endnote">
+<p>I won&rsquo;t be applying to any web-site design jobs anytime soon. <a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:2" role="doc-endnote">
+<p>There are in-line ways to push data; however, they have not been tested at this time. <a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:3" role="doc-endnote">
+<p>As always there are limitations: Only Chrome was tested due to it having such a large market share and great developer tools that allowed inspection of the HTTP/2 traffic and there are multiple ways to implement push at the server end: either within the global configuration file or via the web-pages themselves. Only the configuration file was tested. <a href="#fnref:3" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+</ol>
+</section>
+
+    </div>
+    <div class="article-footer">
+<blockquote class="mt-2x">
+  <ul class="post-copyright list-unstyled">
+    <li class="post-copyright-link hidden-xs">
+      <strong>Permalink: </strong>
+      <a href="https://bitofhex.github.io/2018/07/http2-and-chrome-cache/" title="Dude! Where&#39;s my HTTP/2?" target="_blank" rel="external">https://bitofhex.github.io/2018/07/http2-and-chrome-cache/</a>
+    </li>
+    <li class="post-copyright-license">
+      <strong>License：</strong><a href="http://creativecommons.org/licenses/by/4.0/deed.zh" target="_blank" rel="external">CC BY 4.0 CN</a>
+    </li>
+  </ul>
+</blockquote>
+
+<div class="panel panel-default panel-badger">
+  <div class="panel-body">
+    <figure class="media">
+      <div class="media-left">
+        <a href="https://twitter.com/mattnotmax" target="_blank" class="img-burn thumb-sm visible-lg">
+          <img src="https://bitofhex.github.io/logo.png" class="img-rounded w-full" alt="">
+        </a>
+      </div>
+      <div class="media-body">
+        <h3 class="media-heading"><a href="https://twitter.com/mattnotmax" target="_blank"><span class="text-dark">bit_of_hex</span><small class="ml-1x">digital forensics | incident response</small></a></h3>
+        <div>476c616420796f7520617265207468617420696e74657265737465642e204861766520612067726561742064617921</div>
+      </div>
+    </figure>
+  </div>
+</div>
+    </div>
+  </article>
+
+</div><nav class="bar bar-footer clearfix" data-stick-bottom>
+    <div class="bar-inner">
+        <ul class="pager pull-left">
+            <li class="prev">
+                <a href="https://bitofhex.github.io/2018/07/chrome-cache-and-http2/" title="Your forensic tools are wrong, because your application is lying"><i
+                        class="icon icon-angle-left"
+                        aria-hidden="true"></i><span>&nbsp;&nbsp;Older</span></a>
+            </li>
+            <li class="next">
+                <a href="https://bitofhex.github.io/2018/07/brute-force-dates-times/"
+                    title="Brute-forcing dates &amp; times in binary data"><span>Newer&nbsp;&nbsp;</span><i
+                        class="icon icon-angle-right" aria-hidden="true"></i></a>
+            </li>
+            
+            <li class="toggle-toc">
+                <a class="toggle-btn collapsed" data-toggle="collapse" href="#collapseToc" aria-expanded="false"
+                    title="Catalogue" role="button">
+                    <span>[&nbsp;</span><span>Catalogue</span>
+                    <i class="text-collapsed icon icon-anchor"></i>
+                    <i class="text-in icon icon-close"></i>
+                    <span>]</span>
+                </a>
+            </li>
+        </ul>
+        <div class="bar-right">
+            <div class="share-component" data-sites="facebook,twitter,linkedin,google"
+                data-mobile-sites="facebook,twitter,linkedin,google"></div>
+        </div>
+    </div>
+</nav>
+
+</main><footer class="footer" itemscope itemtype="http://schema.org/WPFooter">
+<ul class="social-links">
+    <li><a href="https://github.com/mattnotmax" target="_blank" title="github" data-toggle=tooltip data-placement=top >
+            <i class="icon icon-github"></i></a></li>
+    <li><a href="https://bitofhex.github.io/index.xml" target="_blank" title="rss" data-toggle=tooltip data-placement=top >
+            <i class="icon icon-rss"></i></a></li>
+    <li><a href="https://twitter.com/mattnotmax" target="_blank" title="twitter" data-toggle=tooltip data-placement=top >
+            <i class="icon icon-twitter"></i></a></li>
+</ul>
+  <div class="copyright">
+    &copy;2018  -
+    2020
+    <div class="publishby">
+        Theme by <a href="https://github.com/xiaoheiAh" target="_blank"> xiaoheiAh </a>base on<a href="https://github.com/xiaoheiAh/hugo-theme-pure" target="_blank"> pure</a>.
+    </div>
+  </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_SVG"></script>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+            showMathMenu: false, //disables context menu
+            tex2jax: {
+            inlineMath: [ ['$','$'], ['\\(','\\)'] ]
+           }
+    });
+</script>
+
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.4.1/dist/jquery.min.js"></script>
+<script>
+    window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')
+</script>
+<script type="text/javascript" src="https://cdn.staticfile.org/highlight.js/9.15.10/highlight.min.js"></script>
+<script type="text/javascript" src="https://cdn.staticfile.org/highlight.js/9.15.10/languages/python.min.js" defer></script>
+<script type="text/javascript" src="https://cdn.staticfile.org/highlight.js/9.15.10/languages/javascript.min.js" defer></script>
+<script type="text/javascript" src="https://cdn.staticfile.org/highlight.js/9.15.10/languages/powershell.min.js" defer></script><script>
+    hljs.configure({
+        tabReplace: '    ', 
+        classPrefix: ''     
+        
+    })
+    hljs.initHighlightingOnLoad();
+</script>
+<script src="https://bitofhex.github.io/js/application.min.bdeb64b910570b6c41badc6a05b7afb0c8ad9efd8525de3c7257d59e786326a3.js"></script>
+<script src="https://bitofhex.github.io/js/plugin.min.51ff8c7317566f82259170fa36e09c4493adc9b9378b427a01ad3f017ebac7dd.js"></script>
+
+<script>
+    (function (window) {
+        var INSIGHT_CONFIG = {
+            TRANSLATION: {
+                POSTS: 'Posts',
+                PAGES: 'Pages',
+                CATEGORIES: 'Categories',
+                TAGS: 'Tags',
+                UNTITLED: '(Untitled)',
+            },
+            ROOT_URL: 'https:\/\/bitofhex.github.io\/',
+            CONTENT_URL: 'https:\/\/bitofhex.github.io\/\/searchindex.json ',
+        };
+        window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+    })(window);
+</script>
+<script type="text/javascript" src="https://bitofhex.github.io/js/insight.min.a343cd9a5a7698336b28ef3a7c16a3a1b1d2d5fb17dc8ed04022bbe08cc5459073a15bdafa3a8a58cdd56080784bdd69fa70b1ae8597565c799c57ed00f0e120.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.min.js"></script>
+<script>
+    tocbot.init({
+        
+        tocSelector: '.js-toc',
+        
+        contentSelector: '.js-toc-content',
+        
+        headingSelector: 'h1, h2, h3',
+        
+        hasInnerContainers: true,
+    });
+</script>
+
+
+  </body>
+</html>
