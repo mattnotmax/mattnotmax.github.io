@@ -5,10 +5,21 @@
     <link>https://bitofhex.com/</link>
     <description>Recent content on bit_of_hex</description>
     <generator>Hugo -- gohugo.io</generator>
-    <lastBuildDate>Sat, 14 Apr 2018 19:22:21 +0000</lastBuildDate>
+    <lastBuildDate>Tue, 14 Apr 2020 20:00:00 +0000</lastBuildDate>
     
         <atom:link href="https://bitofhex.com/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Useful Resources</title>
+      <link>https://bitofhex.com/resources/</link>
+      <pubDate>Tue, 14 Apr 2020 20:00:00 +0000</pubDate>
+      
+      <guid>https://bitofhex.com/resources/</guid>
+      <description>Here&amp;rsquo;s some useful resources I&amp;rsquo;ve either created, summarised or use frequently.
+CyberChef I&amp;rsquo;m a big fan of CyberChef and host a Github Repo of Tips and Recipes. Feel free to contact me if you want to add more or to offer pointers.
+Cyberchef Recipes Cheat Sheets Like most people I try to collate and create useful resources for DFIR work. I&amp;rsquo;ll post and link them here, including cheat sheets and mind maps that I&amp;rsquo;ve created and posted to Github.</description>
+    </item>
     
     <item>
       <title>Suspected Sapphire Mushroom (APT-C-12) malicious LNK files</title>

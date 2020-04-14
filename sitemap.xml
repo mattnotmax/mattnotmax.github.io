@@ -3,6 +3,20 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
+    <loc>https://bitofhex.com/</loc>
+    <lastmod>2020-04-14T20:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://bitofhex.com/resources/</loc>
+    <lastmod>2020-04-14T20:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
     <loc>https://bitofhex.com/tags/apt/</loc>
     <lastmod>2020-02-09T23:54:19+00:00</lastmod>
     <changefreq>monthly</changefreq>
@@ -263,13 +277,6 @@
   
   <url>
     <loc>https://bitofhex.com/about/</loc>
-    <lastmod>2018-04-14T19:22:21+00:00</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  
-  <url>
-    <loc>https://bitofhex.com/</loc>
     <lastmod>2018-04-14T19:22:21+00:00</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
