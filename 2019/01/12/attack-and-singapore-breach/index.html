@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <title>
+        ATT&amp;CKing the Singapore Health Data Breach - bit_of_hex
+      </title>
+    <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport"
+    content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="Cache-Control" content="no-transform" />
+  <meta http-equiv="Cache-Control" content="no-siteapp" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="format-detection" content="telephone=no,email=no,adress=no">
+  
+  <meta name="theme-color" content="#000000" />
+  
+  <meta http-equiv="window-target" content="_top" />
+  
+  
+  <meta name="description" content="Background Between August 2017 and July 2018 a suspected APT group gained access to the Singapore Health Services Private Limited (SingHealth) patient database and exfiltrated the personal details of 1.5 million patients including their names, addresses, genders, races, and dates of birth. Of this, 159,000 patients had additional medical data stolen including the Prime Minster of Singapore.
+On 10 January 2019, a report titled &amp;lsquo;Public Report of the Committee of Inquiry into the Cyber Attack on Singapore Health Services Private Limited’s patient database on or around 27 June 2018&amp;rsquo; was released containing detailed information in regards to the hack and the subsequent incident response activities." />
+  <meta name="generator" content="Hugo 0.68.3 with theme pure" />
+  <title>ATT&amp;CKing the Singapore Health Data Breach - bit_of_hex</title>
+  
+  
+  <link rel="stylesheet" href="https://bitofhex.com/css/style.min.c4bc7071f132c964c2116bca53b392933f377e5ca7b7051ed245187c621a2d3e.css">
+  
+  <link rel="stylesheet" href="https://cdn.staticfile.org/highlight.js/9.15.10/styles/github.min.css" async>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.css" async>
+  <meta property="og:title" content="ATT&amp;CKing the Singapore Health Data Breach" />
+<meta property="og:description" content="Background Between August 2017 and July 2018 a suspected APT group gained access to the Singapore Health Services Private Limited (SingHealth) patient database and exfiltrated the personal details of 1.5 million patients including their names, addresses, genders, races, and dates of birth. Of this, 159,000 patients had additional medical data stolen including the Prime Minster of Singapore.
+On 10 January 2019, a report titled &lsquo;Public Report of the Committee of Inquiry into the Cyber Attack on Singapore Health Services Private Limited’s patient database on or around 27 June 2018&rsquo; was released containing detailed information in regards to the hack and the subsequent incident response activities." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://bitofhex.com/2019/01/12/attack-and-singapore-breach/" />
+<meta property="article:published_time" content="2019-01-12T17:53:26+00:00" />
+<meta property="article:modified_time" content="2019-01-12T17:53:26+00:00" />
+<meta itemprop="name" content="ATT&amp;CKing the Singapore Health Data Breach">
+<meta itemprop="description" content="Background Between August 2017 and July 2018 a suspected APT group gained access to the Singapore Health Services Private Limited (SingHealth) patient database and exfiltrated the personal details of 1.5 million patients including their names, addresses, genders, races, and dates of birth. Of this, 159,000 patients had additional medical data stolen including the Prime Minster of Singapore.
+On 10 January 2019, a report titled &lsquo;Public Report of the Committee of Inquiry into the Cyber Attack on Singapore Health Services Private Limited’s patient database on or around 27 June 2018&rsquo; was released containing detailed information in regards to the hack and the subsequent incident response activities.">
+<meta itemprop="datePublished" content="2019-01-12T17:53:26&#43;00:00" />
+<meta itemprop="dateModified" content="2019-01-12T17:53:26&#43;00:00" />
+<meta itemprop="wordCount" content="2512">
+
+
+
+<meta itemprop="keywords" content="ATT&amp;CK,incident response," /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="ATT&amp;CKing the Singapore Health Data Breach"/>
+<meta name="twitter:description" content="Background Between August 2017 and July 2018 a suspected APT group gained access to the Singapore Health Services Private Limited (SingHealth) patient database and exfiltrated the personal details of 1.5 million patients including their names, addresses, genders, races, and dates of birth. Of this, 159,000 patients had additional medical data stolen including the Prime Minster of Singapore.
+On 10 January 2019, a report titled &lsquo;Public Report of the Committee of Inquiry into the Cyber Attack on Singapore Health Services Private Limited’s patient database on or around 27 June 2018&rsquo; was released containing detailed information in regards to the hack and the subsequent incident response activities."/>
+
+  <!--[if lte IE 9]>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+    <![endif]-->
+
+  <!--[if lt IE 9]>
+      <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+    <![endif]-->
+
+</head>
+  </head>
+
+  
+  
+
+  <body class="main-center theme-black" itemscope itemtype="http://schema.org/WebPage"><header class="header" itemscope itemtype="http://schema.org/WPHeader">
+    <div class="slimContent">
+      <div class="navbar-header">
+        <div class="profile-block text-center">
+          <a id="avatar" href="https://twitter.com/mattnotmax" target="_blank">
+            <img class="img-circle img-rotate" src="https://bitofhex.com/logo.png" width="200" height="200">
+          </a>
+          <h2 id="name" class="hidden-xs hidden-sm">bit_of_hex</h2>
+          <h3 id="title" class="hidden-xs hidden-sm hidden-md">digital forensics | incident response</h3>
+          <small id="location" class="text-muted hidden-xs hidden-sm"><i class="icon icon-map-marker"></i>Melbourne, Australia</small>
+        </div><div class="search" id="search-form-wrap">
+    <form class="search-form sidebar-form">
+        <div class="input-group">
+            <input type="text" class="search-form-input form-control" placeholder="Search" />
+            <span class="input-group-btn">
+                <button type="submit" class="search-form-submit btn btn-flat" onclick="return false;"><i
+                        class="icon icon-search"></i></button>
+            </span>
+        </div>
+        <div class="ins-search">
+            <div class="ins-search-mask"></div>
+            <div class="ins-search-container">
+                <div class="ins-input-wrapper">
+                    <input type="text" class="ins-search-input" placeholder="Type something..."
+                        x-webkit-speech />
+                    <button type="button" class="close ins-close ins-selectable" data-dismiss="modal"
+                        aria-label="Close"><span aria-hidden="true">×</span></button>
+                </div>
+                <div class="ins-section-wrapper">
+                    <div class="ins-section-container"></div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+        <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#main-navbar" aria-controls="main-navbar" aria-expanded="false">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+      </div>
+      <nav id="main-navbar" class="collapse navbar-collapse" itemscope itemtype="http://schema.org/SiteNavigationElement" role="navigation">
+        <ul class="nav navbar-nav main-nav">
+            <li class="menu-item menu-item-home">
+                <a href="/">
+                    <i class="icon icon-home-fill"></i>
+                  <span class="menu-title">Home</span>
+                </a>
+            </li>
+            <li class="menu-item menu-item-resources">
+                <a href="/resources/">
+                    <i class="icon icon-project"></i>
+                  <span class="menu-title">Resources</span>
+                </a>
+            </li>
+            <li class="menu-item menu-item-archives">
+                <a href="/posts/">
+                    <i class="icon icon-archives-fill"></i>
+                  <span class="menu-title">Archives</span>
+                </a>
+            </li>
+            <li class="menu-item menu-item-tags">
+                <a href="/tags/">
+                    <i class="icon icon-tags"></i>
+                  <span class="menu-title">Tags</span>
+                </a>
+            </li>
+            <li class="menu-item menu-item-about">
+                <a href="/about/">
+                    <i class="icon icon-cup-fill"></i>
+                  <span class="menu-title">About</span>
+                </a>
+            </li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+<aside class="sidebar" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    
+      
+<div class="widget">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget-body">
+        <ul class="recent-post-list list-unstyled no-thumbnail">
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
+                        <a href="https://bitofhex.com/2020/02/09/sapphire-mushroom-lnk-files/" class="title">Suspected Sapphire Mushroom (APT-C-12) malicious LNK files</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2020-02-09 23:54:19 &#43;0000 UTC" itemprop="datePublished">2020-02-09</time>
+                    </p>
+                </div>
+            </li>
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
+                        <a href="https://bitofhex.com/2019/11/16/say-cheese-an-analysis-of-foto-lnk/" class="title">&#34;Say Cheese!&#34; An analysis of foto.lnk</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2019-11-16 16:46:26 &#43;0000 UTC" itemprop="datePublished">2019-11-16</time>
+                    </p>
+                </div>
+            </li>
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
+                        <a href="https://bitofhex.com/2019/07/15/deriving-intelligence-from-lnk-files/" class="title">Deriving intelligence from LNK files</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2019-07-15 02:14:48 &#43;0000 UTC" itemprop="datePublished">2019-07-15</time>
+                    </p>
+                </div>
+            </li>
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
+                        <a href="https://bitofhex.com/2019/02/19/base64-encoded-signatures/" class="title">Base64 Encoded File Signatures</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2019-02-19 00:06:06 &#43;0000 UTC" itemprop="datePublished">2019-02-19</time>
+                    </p>
+                </div>
+            </li>
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
+                        <a href="https://bitofhex.com/2019/01/12/attack-and-singapore-breach/" class="title">ATT&amp;CKing the Singapore Health Data Breach</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2019-01-12 17:53:26 &#43;0000 UTC" itemprop="datePublished">2019-01-12</time>
+                    </p>
+                </div>
+            </li>
+        </ul>
+    </div>
+</div>
+  </div>
+</aside>
+
+    
+    
+<aside class="sidebar sidebar-toc collapse" id="collapseToc" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    <h4 class="toc-title">Catalogue</h4>
+    <nav id="toc" class="js-toc toc">
+
+    </nav>
+  </div>
+</aside>
+<main class="main" role="main"><div class="content">
+  <article id="-attack-and-singapore-breach" class="article article-type-" itemscope
+    itemtype="http://schema.org/BlogPosting">
+    
+    <div class="article-header">
+      <h1 itemprop="name">
+  <a
+    class="article-title"
+    href="/2019/01/12/attack-and-singapore-breach/"
+    >ATT&amp;CKing the Singapore Health Data Breach</a
+  >
+</h1>
+
+      <div class="article-meta">
+        
+<span class="article-date">
+  <i class="icon icon-calendar-check"></i>&nbsp;
+<a href="https://bitofhex.com/2019/01/12/attack-and-singapore-breach/" class="article-date">
+  <time datetime="2019-01-12 17:53:26 &#43;0000 UTC" itemprop="datePublished">2019-01-12</time>
+</a>
+</span>
+  
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>&nbsp;
+    <a class="article-tag-link" href="/tags/attck/"> ATT&amp;CK </a>
+    <a class="article-tag-link" href="/tags/incident-response/"> incident response </a>
+  </span>
+
+        <span class="post-comment"><i class="icon icon-comment"></i>&nbsp;<a href="/2019/01/12/attack-and-singapore-breach/#comments"
+            class="article-comment-link">Comments</a></span>
+      </div>
+    </div>
+    <div class="article-entry marked-body js-toc-content" itemprop="articleBody">
+      <h2 id="background">Background</h2>
+<p>Between August 2017 and July 2018 a suspected APT group gained access to the Singapore Health Services Private Limited (SingHealth) patient database and exfiltrated the personal details of 1.5 million patients including their names, addresses, genders, races, and dates of birth. Of this, 159,000 patients had additional medical data stolen including the Prime Minster of Singapore.</p>
+<p>On 10 January 2019, a <a href="https://www.mci.gov.sg/~/media/mcicorp/doc/report%20of%20the%20coi%20into%20the%20cyber%20attack%20on%20singhealth%2010%20jan%202019.pdf?la=en">report</a> titled &lsquo;Public Report of the Committee of Inquiry into the Cyber Attack on Singapore Health Services Private Limited’s patient database on or around 27 June 2018&rsquo; was released containing detailed information in regards to the hack and the subsequent incident response activities.</p>
+<p>The report provides a detailed overview of the movements of the attacker throughout the network and the known actions taken by the group to gain entry, move laterally, steal credentials, access the crown jewels and ultimately exfiltrate a significant amount of sensitive data.</p>
+<p>An excellent graphical summary is located in the report as follows:</p>
+<div style="text-align:center"><img src="/2019/01/overview-of-breach.PNG" alt="[overview-of-breach" style="border: #000000 1px outset"></div>
+<h2 id="attcking-the-report">ATT&amp;CKing the report</h2>
+<p><a href="https://attack.mitre.org/matrices/enterprise/">ATT&amp;CK</a> stands for Adversarial Tactics, Techniques, and Common Knowledge. It is a knowledge base of adversarial techniques. These techniques are organised under a framework of tactics: Initial Access, Execution, Persistence, Privilege Escalation, Defense Evasion, Credential Access, Discovery, Lateral Movement, Collection, Exfiltration, and Command and Control.</p>
+<p>By combining the report information and mapping ATT&amp;CK techniques we can observe where the attack could have been identified. We can then apply this to our own networks and ultimately learn from this data breach to strengthen ourselves.</p>
+<p>In order to maintain accuracy, I will be quoting directly from the report referenced above and from the ATT&amp;CK knowledge base. Due to the flow of the report and the style of breach, some tactics will be grouped together.</p>
+<hr>
+<h3 id="initial-access--execution">Initial Access &amp; Execution</h3>
+<p>The <a href="https://attack.mitre.org/tactics/TA0001/">initial access</a> tactic represents the vectors adversaries use to gain an initial foothold within a network.</p>
+<p><a href="https://attack.mitre.org/tactics/TA0002/">Execution</a> represents techniques that result in execution of adversary-controlled code on a local or remote system. This tactic is often used in conjunction with initial access as the means of executing code once access is obtained.</p>
+<p><strong>Key Report Quotes:</strong></p>
+<p>&lsquo;&hellip;while not conclusive, there is some evidence to suggest that the initial intrusion was through a successful phishing attack, which led to malware being installed and executed on the workstation&hellip;The publicly available hacking tool was installed on Workstation A on 1 December 2017 by exploiting a vulnerability in the version of Microsoft Outlook&hellip;&rsquo; (p. 54 &amp; 55)</p>
+<p>&lsquo;The tool was thus successfully installed and was used to download malicious files onto Workstation A. Some of these files were masqueraded as .jpg image files, but in fact contained malicious PowerShell scripts, one of which is thought to be a modified PowerShell script taken from an open source post-exploitation tool.&rsquo; (p. 55)</p>
+<p>&lsquo;With the introduction of the hacking tool and RAT 1 in December 2017, the attacker gained the capability to execute shell scripts remotely, as well as to upload and download files to Workstation A.&rsquo; (p. 56)</p>
+<p><strong>Identified ATT&amp;CK Techniques:</strong></p>
+<p><del>T1193 - Spearphishing Attachment OR T1192 - Spearphishing Link</del> (see update below)
+T1078 - Valid Accounts
+T1086 - PowerShell
+T1204 - User Execution
+T1137 - Office Application Startup
+T1064 - Scripting</p>
+<p><strong>Comment:</strong></p>
+<p>Phishing is split into multiple categories in ATT&amp;CK including: <a href="https://attack.mitre.org/techniques/T1193/">Spearphishing Attachment</a> and <a href="https://attack.mitre.org/techniques/T1192/">Spearphishing Link</a>.</p>
+<p>ATT&amp;CK states: &lsquo;Adversaries frequently manipulate file extensions and icons in order to make attached executables appear to be document files, or files exploiting one application appear to be a file for a different one.&rsquo;</p>
+<p>The malware noted above has been suggested to exploit CVE 2017-11774 and <a href="https://twitter.com/ItsReallyNick/status/1083398264999813120">assessed</a> to use a publicly available tool, <a href="https://sensepost.com/blog/2017/outlook-home-page-another-ruler-vector/">Ruler</a>. Where Ruler fits in to the ATT&amp;CK framework is a bit murky because it is both persistence and the shell. I have included T1137; however, the notes on the ATT&amp;CK knowledge base don&rsquo;t mention this kind of technique.</p>
+<p><strong>14/01/2019 UPDATE</strong></p>
+<p>The phishing vector has been changed to Valid Accounts. Nick Car (@itsreallynick) <a href="https://twitter.com/ItsReallyNick/status/1084513705268793345">corrected me as follows</a>: &lsquo;I also personally don&rsquo;t believe there was any phishing here. Singapore Health report mentioned they couldn&rsquo;t pin down initial infection and assumed it was phish.&rsquo;</p>
+<p>He pointed me to<a href="https://www.fireeye.com/blog/threat-research/2018/12/overruled-containing-a-potentially-destructive-adversary.html"> their blog</a> detailing FireEye expierence with the Ruler exploit:</p>
+<p>&lsquo;FireEye has observed and documented an uptick in several malicious attackers&rsquo; usage of this specific home page exploitation technique. Based on our experience, this particular method may be more successful due to defenders misinterpreting artifacts and focusing on incorrect mitigations. This is understandable, as some defenders may first learn of successful CVE-2017-11774 exploitation when observing Outlook spawning processes resulting in malicious code execution. <em>When this observation is combined with standalone forensic artifacts that may look similar to malicious HTML Application (.hta) attachments, the evidence may be misinterpreted as initial infection via a phishing email.</em> This incorrect assumption overlooks the fact that attackers require valid credentials to deploy CVE-2017-11774, and thus the scope of the compromise may be greater than individual users&rsquo; Outlook clients where home page persistence is discovered.&rsquo;</p>
+<hr>
+<h3 id="persistence">Persistence</h3>
+<p><a href="https://attack.mitre.org/tactics/TA0003/">Persistence</a> is any access, action, or configuration change to a system that gives an adversary a persistent presence on that system.</p>
+<p><strong>Key Report Quotes:</strong></p>
+<p>&lsquo;A variety of custom web shells, tools, and unique malware were used in the attack&hellip;Remote Access Trojans, such as the abovementioned RAT 1 and RAT 2, were used to provide the attacker with full control over specific infected systems and to serve as backdoors to re-enter the network.&rsquo; (p. 93</p>
+<p>&lsquo;IHiS’ investigations revealed that the attacker had gained administrative privileges and moved across the network to access the Citrix servers. This was an indication that the KRBTGT account could have been compromised.&rsquo; (p. 192)</p>
+<p><strong>Identified ATT&amp;CK Techniques:</strong></p>
+<p>T1137 - Office Application Startup
+T1078 - Valid Accounts
+T1097 - Pass the Ticket</p>
+<p><strong>Comment:</strong></p>
+<p>The report does not detail any specific persistence mechanisms other than the exploited Outlook vulnerability that allowed the actor to drop further malware and enabled remote access. This malware (unnamed RATs) then simply stole/dumped credentials which allowed them to use valid accounts to move throughout the network.</p>
+<p>The KRBTGT account was reset twice as per standard practice on the assessment that it had been compromised.</p>
+<hr>
+<h3 id="privilege-escalation--credential-access">Privilege Escalation &amp; Credential Access</h3>
+<p><a href="https://attack.mitre.org/tactics/TA0004/">Privilege escalation </a>is the result of actions that allows an adversary to obtain a higher level of permissions on a system or network.</p>
+<p><a href="https://attack.mitre.org/tactics/TA0006/">Credential access</a> represents techniques resulting in access to or control over system, domain, or service credentials that are used within an enterprise environment. Adversaries will likely attempt to obtain legitimate credentials from users or administrator accounts to use within the network.</p>
+<p><strong>Key Report Quotes:</strong></p>
+<p>&lsquo;The log file was a remnant file from a known malware which has password dumping capability.&rsquo; (p. 55)</p>
+<p>&lsquo;Investigations have revealed at least two possibilities of how the attacker obtained the password for the L.A. account&hellip;Second, the credentials to the L.A. account were found to be reflected in clear-text on a batch file on Citrix Server 1. It is possible that the attacker had first achieved access to the file system of the Citrix server, and then accessed this file and obtained the credentials.&rsquo; (p. 59)</p>
+<p>&lsquo;CSA has observed that the attacker could have acquired the credentials to the [service account] account through the malware it used.&rsquo; (p. 60)</p>
+<p>&lsquo;CSA’s analysis of the SCM application showed that there were signs of insecure coding practices, giving rise to a vulnerability that was likely exploited by the attacker to obtain the credentials to the A.A. account.&rsquo; (p. 86)</p>
+<p>&lsquo;The FY16 H-Cloud Pen-Test revealed that administrator credentials were found in network shares. A Citrix administrator password was also found in a Windows batch file. The implication of this was that attackers having access to such files, or with physical or network access to shared folders, could read this sensitive information and further use it to perform enhanced focused attacks.&rsquo; (p. 89)</p>
+<p>&lsquo;The penetration testers uncovered that the Citrix virtualisation environment used was not configured adequately to prevent attackers from breaking out of the virtualisation and into the underlying operating system. Exploiting the vulnerability allowed the penetration testers to access files and execute arbitrary commands. CSA’s hypothesis is that this vulnerability could have been the means by which the attacker gained initial access to the file system of any of the compromised SGH Citrix servers&hellip;the vulnerability continued to be exploitable for the SGH Citrix servers at the time of the Cyber Attack&rsquo; (p. 90 &amp; 91)</p>
+<p><strong>Identified ATT&amp;CK Techniques:</strong></p>
+<p>T1078 - Valid Accounts
+T1081 - Credentials in Files
+T1003 - Credential Dumping
+T1068 - Exploitation for Privilege Escalation</p>
+<p><strong>Comment:</strong></p>
+<p>Whether or not the local administrator password was accessed from the batch file is moot as the password was &lsquo;P@ssw0rd&rsquo;, which would have been cracked almost immediately.</p>
+<p>What is most interesting is that the attackers likely exploited a coding vulnerability to access the so-called AA account. This AA account was the &lsquo;last mile&rsquo; that allowed them to access the medical records.</p>
+<hr>
+<h3 id="defensive-evasion">Defensive Evasion</h3>
+<p><a href="https://attack.mitre.org/tactics/TA0005/">Defense evasion</a> consists of techniques an adversary may use to evade detection or avoid other defenses.</p>
+<p><strong>Key Report Quotes:</strong></p>
+<p>&lsquo;The Citrix system event log for Citrix Server 1 was also deleted in the evening of 11 June 2018&hellip; The deletion was not performed by any IHiS staff. It was presumably done by the attacker to cover its tracks.&rsquo; (p. 62 &amp; 63)</p>
+<p>&lsquo;The Citrix Team also discovered on 26 June 2018 that the Windows event logs for Citrix Servers 2 and 3 were deleted earlier that afternoon. This was further evidence of malicious activity.&rsquo; (p. 147)</p>
+<p>&lsquo;&hellip;during the incident response, malware samples were given a cybersecurity company to develop malware signatures. The firm’s software was initially unable to detect the samples as being malicious. After CSA shared their initial malware analysis findings with the company, it was able to develop malware signatures in their antivirus solution for mass network-wide scanning.&rsquo; (p. 93)</p>
+<p>The attacker employed advanced tactics, techniques, and procedures, as seen from the suite of advanced, customised and stealthy malware used&hellip;the attacker was conscientious in erasing logs on compromised workstations and servers. Notably, the attacker even re-entered the network after being detected, to erase system and program logs.&rsquo; (p. 95)</p>
+<p><strong>Identified ATT&amp;CK Techniques:</strong></p>
+<p>T1070 - Indicator Removal on Host
+T1066 - Indicator Removal from Tools</p>
+<p><strong>Comment:</strong></p>
+<p>ATT&amp;CK notes that, &lsquo;&hellip;adversaries performing actions related to account management, account logon and directory service access, etc. may choose to clear the events in order to hide their activities.&rsquo;</p>
+<p>In regards to the malware, the report notes that it wasn&rsquo;t picked up on the AV. This leads to the hypothesis that the attackers knew what sort of AV was deployed and potentially modified malware to suit the environment and circumvent AV detection. This in itself is another technique (T1063) <a href="https://attack.mitre.org/techniques/T1063/">Security Software Discovery</a>.</p>
+<hr>
+<h3 id="discovery--lateral-movement">Discovery &amp; Lateral Movement</h3>
+<p><a href="https://attack.mitre.org/tactics/TA0007/">Discovery</a> consists of techniques that allow the adversary to gain knowledge about the system and internal network.</p>
+<p><a href="https://attack.mitre.org/tactics/TA0008/">Lateral movement</a> consists of techniques that enable an adversary to access and control remote systems on a network</p>
+<p><strong>Key Report Quotes:</strong></p>
+<p>&lsquo;Evidence of the attacker’s lateral movements was found in the proliferation of malware across a number of endpoints and servers&hellip;There was also evidence of PowerShell commands used by the attacker to distribute malware to infect other machines, and of malicious files being copied between machines over mapped network drives. These were clear indicators that the attacker had moved laterally around the network.&rsquo; (.p 57)</p>
+<p>The &lsquo;&hellip;reconstruction of events show that the attacker had moved laterally using RDP to remotely access multiple SGH Citrix servers. This was done from compromised workstations and suspected virtual machines, and by using compromised user credentials.&rsquo; (p. 77)</p>
+<p><strong>Identified ATT&amp;CK Techniques:</strong>
+T1105 - Remote File Copy
+T1086 - PowerShell
+T1076 - Remote Desktop Protocol</p>
+<p>While not specific, the report identifies &lsquo;Remote File Copy&rsquo; and &lsquo;Powershell&rsquo; as two techniques that are noted in ATT&amp;CK. In regards to Remote File Copy, &lsquo;[a]dversaries may also copy files laterally between internal victim systems to support Lateral Movement with remote Execution using inherent file sharing protocols such as file sharing over SMB to connected network shares&hellip;&rsquo;</p>
+<p>In regards to RDP, ATT&amp;CK notes, &lsquo;[a]dversaries may connect to a remote system over RDP/RDS to expand access if the service is enabled and allows access to accounts with known credentials.&rsquo;</p>
+<hr>
+<h3 id="collection-exfiltration--command-and-control">Collection, Exfiltration &amp; Command and Control</h3>
+<p><a href="https://attack.mitre.org/tactics/TA0009/">Collection</a> consists of techniques used to identify and gather information, such as sensitive files, from a target network prior to exfiltration.</p>
+<p><a href="https://attack.mitre.org/tactics/TA0010/">Exfiltration</a> refers to techniques and attributes that result or aid in the adversary removing files and information from a target network.</p>
+<p><a href="https://attack.mitre.org/tactics/TA0011/">Command and Control</a> represents how adversaries communicate with systems under their control within a target network.</p>
+<p><strong>Key Report Quotes:</strong></p>
+<p>&lsquo;From 27 June to 4 July 2018, the data was exfiltrated by the attacker via Workstation A to the attacker’s C2 servers&hellip;&rsquo; (p. 68)</p>
+<p>&lsquo;&hellip;the C2 servers were used for&hellip;Infection: where the server is used as a means of dropping malware into the system it is trying to infect&hellip;Data exfiltration: there were indications of technical data (and not medical records) being sent to the servers and&hellip;Beacon: infected machines may have connected to C2 servers to establish a ‘heartbeat’ (p. 94)</p>
+<p><strong>Identified ATT&amp;CK Techniques:</strong></p>
+<p>T1074 - Data Staged
+T1041 - Exfiltration Over Command and Control Channel</p>
+<p><strong>Comment</strong></p>
+<p>The report is a bit thin on the more sensitive parts including the C2 infrastructure. ATT&amp;CK notes in T1041, &lsquo;Data exfiltration is performed over the Command and Control channel. Data is encoded into the normal communications channel using the same protocol as command and control communications.&rsquo; The report does not state if the protocol and encoding was the same between the C2 commands and exfiltration.</p>
+<hr>
+<h2 id="summary">Summary</h2>
+<p>A total of 16 ATT&amp;CK techniques were identified from a (non-comprehensive) review of the report.</p>
+<p>T1193 - Spear phishing Attachment (unlikely - see update above)
+T1192 - Spear phishing Link - (unlikely - see update above)
+T1086 - PowerShell
+T1204 - User Execution
+T1137 - Office Application Startup
+T1064 - Scripting
+T1078 - Valid Accounts
+T1097 - Pass the Ticket
+T1081 - Credentials in Files
+T1003 - Credential Dumping
+T1068 - Exploitation for Privilege Escalation
+T1070 - Indicator Removal on Host
+T1066 - Indicator Removal from Tools
+T1076 - Remote Desktop Protocol
+T1074 - Data Staged
+T1041 - Exfiltration Over Command and Control Channel</p>
+<p>So how can this be used? Well, the best place to start is with experts. I&rsquo;d recommend watching the following presentation by Steve Motts and Christian Kopacsi which explains why ATT&amp;CK is so important and how to strengthen your defence by using ATT&amp;CK:</p>
+<hr>
+<div style="text-align:center"><iframe width="560" height="315" align='center' src="https://www.youtube.com/embed/jsFO8HDPLFw" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>
+<hr>
+<p>Following that, some useful links and information is referenced at SneakyMonkey&rsquo;s Blue Team Tips <a href="https://www.sneakymonkey.net/2018/06/25/blue-team-tips/">here</a>.</p>
+<h2 id="final-caveat">Final Caveat</h2>
+<p>The report is 425 pages, and presumably doesn&rsquo;t cover all the information. I&rsquo;ve probably skipped some important bits. However, that&rsquo;s not the main purpose of this post (although the breach itself is very interesting). What is important is that there are at least 16 identified ATT&amp;CK techniques from this breach alone. So while these reports are interesting, don&rsquo;t dismiss them as not relevant to your environment - using the ATT&amp;CK knowledge base means that we can learn from these real-world examples.</p>
+<p>As usual, if you have any comments, corrections or issues, drop me a line at <a href="mailto:matt@bitofhex.com">matt@bitofhex.com</a> or via Twitter at <a href="https://twitter.com/mattnotmax">@mattnotmax</a>. Thanks for reading!</p>
+
+    </div>
+    <div class="article-footer">
+    </div>
+  </article>
+
+</div><nav class="bar bar-footer clearfix" data-stick-bottom>
+    <div class="bar-inner">
+        <ul class="pager pull-left">
+            <li class="prev">
+                <a href="https://bitofhex.com/2018/11/07/starting-in-digital-forensics-law-enforcement-edition/" title="Digital Forensics Interviews: Law Enforcement Edition"><i
+                        class="icon icon-angle-left"
+                        aria-hidden="true"></i><span>&nbsp;&nbsp;Older</span></a>
+            </li>
+            <li class="next">
+                <a href="https://bitofhex.com/2019/02/19/base64-encoded-signatures/"
+                    title="Base64 Encoded File Signatures"><span>Newer&nbsp;&nbsp;</span><i
+                        class="icon icon-angle-right" aria-hidden="true"></i></a>
+            </li>
+            
+            <li class="toggle-toc">
+                <a class="toggle-btn collapsed" data-toggle="collapse" href="#collapseToc" aria-expanded="false"
+                    title="Catalogue" role="button">
+                    <span>[&nbsp;</span><span>Catalogue</span>
+                    <i class="text-collapsed icon icon-anchor"></i>
+                    <i class="text-in icon icon-close"></i>
+                    <span>]</span>
+                </a>
+            </li>
+        </ul>
+        <div class="bar-right">
+            <div class="share-component" data-sites="facebook,twitter,linkedin,google"
+                data-mobile-sites="facebook,twitter,linkedin,google"></div>
+        </div>
+    </div>
+</nav>
+
+</main><footer class="footer" itemscope itemtype="http://schema.org/WPFooter">
+<ul class="social-links">
+    <li><a href="https://github.com/mattnotmax" target="_blank" title="github" data-toggle=tooltip data-placement=top >
+            <i class="icon icon-github"></i></a></li>
+    <li><a href="https://bitofhex.com/index.xml" target="_blank" title="rss" data-toggle=tooltip data-placement=top >
+            <i class="icon icon-rss"></i></a></li>
+    <li><a href="https://twitter.com/mattnotmax" target="_blank" title="twitter" data-toggle=tooltip data-placement=top >
+            <i class="icon icon-twitter"></i></a></li>
+</ul>
+  <div class="copyright">
+    &copy;2018  -
+    2020
+    <div class="publishby">
+        Theme by <a href="https://github.com/xiaoheiAh" target="_blank"> xiaoheiAh </a>base on<a href="https://github.com/xiaoheiAh/hugo-theme-pure" target="_blank"> pure</a>.
+    </div>
+  </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_SVG"></script>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+            showMathMenu: false, //disables context menu
+            tex2jax: {
+            inlineMath: [ ['$','$'], ['\\(','\\)'] ]
+           }
+    });
+</script>
+
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.4.1/dist/jquery.min.js"></script>
+<script>
+    window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')
+</script>
+<script type="text/javascript" src="https://cdn.staticfile.org/highlight.js/9.15.10/highlight.min.js"></script>
+<script type="text/javascript" src="https://cdn.staticfile.org/highlight.js/9.15.10/languages/python.min.js" defer></script>
+<script type="text/javascript" src="https://cdn.staticfile.org/highlight.js/9.15.10/languages/javascript.min.js" defer></script>
+<script type="text/javascript" src="https://cdn.staticfile.org/highlight.js/9.15.10/languages/powershell.min.js" defer></script><script>
+    hljs.configure({
+        tabReplace: '    ', 
+        classPrefix: ''     
+        
+    })
+    hljs.initHighlightingOnLoad();
+</script>
+<script src="https://bitofhex.com/js/application.min.bdeb64b910570b6c41badc6a05b7afb0c8ad9efd8525de3c7257d59e786326a3.js"></script>
+<script src="https://bitofhex.com/js/plugin.min.51ff8c7317566f82259170fa36e09c4493adc9b9378b427a01ad3f017ebac7dd.js"></script>
+
+<script>
+    (function (window) {
+        var INSIGHT_CONFIG = {
+            TRANSLATION: {
+                POSTS: 'Posts',
+                PAGES: 'Pages',
+                CATEGORIES: 'Categories',
+                TAGS: 'Tags',
+                UNTITLED: '(Untitled)',
+            },
+            ROOT_URL: 'https:\/\/bitofhex.com\/',
+            CONTENT_URL: 'https:\/\/bitofhex.com\/\/searchindex.json ',
+        };
+        window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+    })(window);
+</script>
+<script type="text/javascript" src="https://bitofhex.com/js/insight.min.a343cd9a5a7698336b28ef3a7c16a3a1b1d2d5fb17dc8ed04022bbe08cc5459073a15bdafa3a8a58cdd56080784bdd69fa70b1ae8597565c799c57ed00f0e120.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.min.js"></script>
+<script>
+    tocbot.init({
+        
+        tocSelector: '.js-toc',
+        
+        contentSelector: '.js-toc-content',
+        
+        headingSelector: 'h1, h2, h3',
+        
+        hasInnerContainers: true,
+    });
+</script>
+
+
+  </body>
+</html>
