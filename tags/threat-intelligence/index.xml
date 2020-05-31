@@ -5,10 +5,20 @@
     <link>https://bitofhex.com/tags/threat-intelligence/</link>
     <description>Recent content in threat intelligence on bit_of_hex</description>
     <generator>Hugo -- gohugo.io</generator>
-    <lastBuildDate>Mon, 10 Feb 2020 23:54:19 +0000</lastBuildDate>
+    <lastBuildDate>Sun, 31 May 2020 10:00:00 +0000</lastBuildDate>
     
         <atom:link href="https://bitofhex.com/tags/threat-intelligence/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>YouTube is my C2</title>
+      <link>https://bitofhex.com/2020/05/31/youtube-is-my-c2/</link>
+      <pubDate>Sun, 31 May 2020 10:00:00 +0000</pubDate>
+      
+      <guid>https://bitofhex.com/2020/05/31/youtube-is-my-c2/</guid>
+      <description>A couple of days back I tweeted about some interesting LNK file samples I had found on Virus Total. They were interesting due to their endless Russian Doll-esque style of behaviour which involed extracting VBE script upon VBE script, patching headers and reversing bytes.
+As of 31 May 2020, I&amp;rsquo;ve identified eleven samples dating between 2020-03-02 to 2020-05-29 as uploaded to Virus Total. They are all consistently created from the same VMWare host using the same account, and the same base LNK template as seen by the output of LECMD:</description>
+    </item>
     
     <item>
       <title>Forensic Freebie with digitalforensics.io</title>
@@ -200,17 +210,6 @@ Often, a lack of understanding of the benefits of memory forensics has pervaded 
       <description>Hello!
 This is the beginning of my digital forensics &amp;amp; incident response blog, bit_of_hex. This blog is born of the philosophy that everyone in the DFIR space has something to contribute, at any level or area within the community.
 I also realised that I have benefited for so long from other people&amp;rsquo;s research and effort that it was time I gave something back. Many times when I have searched for that particular forensic artefact or obscure problem I&amp;rsquo;ve found someone who has taken the time to publish their own research.</description>
-    </item>
-    
-    <item>
-      <title>About bit_of_hex</title>
-      <link>https://bitofhex.com/about/</link>
-      <pubDate>Sat, 14 Apr 2018 19:22:21 +0000</pubDate>
-      
-      <guid>https://bitofhex.com/about/</guid>
-      <description>My name is Matt, and work in Digital Forensics &amp;amp; Incident Response (DFIR) based in Melbourne, Australia. This blog, bit_of_hex, allows me to share my research and analysis.
-I&amp;rsquo;m contactable on email at matt@bitofhex.com or via Twitter at @mattnotmax.
-While ever effort has been made to ensure the accuracy of this blog, readers should never (for this or any other blog) rely on its content without their own up-to-date research and verification.</description>
     </item>
     
   </channel>

@@ -3,6 +3,48 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
+    <loc>https://bitofhex.com/tags/lnk/</loc>
+    <lastmod>2020-05-31T10:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://bitofhex.com/tags/malware/</loc>
+    <lastmod>2020-05-31T10:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://bitofhex.com/posts/</loc>
+    <lastmod>2020-05-31T10:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://bitofhex.com/tags/</loc>
+    <lastmod>2020-05-31T10:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://bitofhex.com/tags/threat-intelligence/</loc>
+    <lastmod>2020-05-31T10:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://bitofhex.com/2020/05/31/youtube-is-my-c2/</loc>
+    <lastmod>2020-05-31T10:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
     <loc>https://bitofhex.com/tags/competition/</loc>
     <lastmod>2020-04-18T10:53:26+00:00</lastmod>
     <changefreq>monthly</changefreq>
@@ -11,20 +53,6 @@
   
   <url>
     <loc>https://bitofhex.com/2020/04/18/forensic-freebie/</loc>
-    <lastmod>2020-04-18T10:53:26+00:00</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  
-  <url>
-    <loc>https://bitofhex.com/posts/</loc>
-    <lastmod>2020-04-18T10:53:26+00:00</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  
-  <url>
-    <loc>https://bitofhex.com/tags/</loc>
     <lastmod>2020-04-18T10:53:26+00:00</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
@@ -66,21 +94,7 @@
   </url>
   
   <url>
-    <loc>https://bitofhex.com/tags/malware/</loc>
-    <lastmod>2020-02-10T23:54:19+00:00</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  
-  <url>
     <loc>https://bitofhex.com/2020/02/10/sapphire-mushroom-lnk-files/</loc>
-    <lastmod>2020-02-10T23:54:19+00:00</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  
-  <url>
-    <loc>https://bitofhex.com/tags/threat-intelligence/</loc>
     <lastmod>2020-02-10T23:54:19+00:00</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
