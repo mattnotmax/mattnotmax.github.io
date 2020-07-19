@@ -10,6 +10,17 @@
     
     
     <item>
+      <title>WSL2, Docker, &amp; CyberChef</title>
+      <link>https://bitofhex.com/2020/07/19/wsl2-docker-cyberchef/</link>
+      <pubDate>Sun, 19 Jul 2020 01:00:00 +0000</pubDate>
+      
+      <guid>https://bitofhex.com/2020/07/19/wsl2-docker-cyberchef/</guid>
+      <description>WSL2 is here for Windows 10 version 2004. The big difference is that Docker containers can now be run from within WSL2. I&amp;rsquo;ve never been much of a docker aficionado but thought I&amp;rsquo;d take a look to see how it all worked.
+Installation: WSL2 WSL2 isn&amp;rsquo;t yet at an automatic install or upgrade. There are still some manual steps detailed here. Essentially in an Administrator PowerShell instance:
+ dism.exe /online /enable-feature /featurename:VirtualMachinePlatform /all /norestart Restart your machine wsl --set-default-version 2 Install a linux distribution: I chose Ubuntu 20.</description>
+    </item>
+    
+    <item>
       <title>YouTube is my C2</title>
       <link>https://bitofhex.com/2020/05/31/youtube-is-my-c2/</link>
       <pubDate>Sun, 31 May 2020 10:00:00 +0000</pubDate>
@@ -198,17 +209,6 @@ In this post, I will continue with the same memory image but see what additional
       <guid>https://bitofhex.com/2018/04/29/volatility-and-tor/</guid>
       <description>Memory forensics is a powerful tool. All executed code and data passes through RAM which makes it perfect for hunting malware. Most discussion on memory forensics is focused (rightly) on malware analysis, and the benefits of memory forensics for non-malware scenarios have been less publicised.
 Often, a lack of understanding of the benefits of memory forensics has pervaded internal investigations or law enforcement. There is a tendency to think, “we’ve got the whole box, so why would we need the memory?</description>
-    </item>
-    
-    <item>
-      <title>Introducing bit_of_hex</title>
-      <link>https://bitofhex.com/2018/04/28/introducing-bit_of_hex/</link>
-      <pubDate>Sat, 28 Apr 2018 23:19:10 +0000</pubDate>
-      
-      <guid>https://bitofhex.com/2018/04/28/introducing-bit_of_hex/</guid>
-      <description>Hello!
-This is the beginning of my digital forensics &amp;amp; incident response blog, bit_of_hex. This blog is born of the philosophy that everyone in the DFIR space has something to contribute, at any level or area within the community.
-I also realised that I have benefited for so long from other people&amp;rsquo;s research and effort that it was time I gave something back. Many times when I have searched for that particular forensic artefact or obscure problem I&amp;rsquo;ve found someone who has taken the time to publish their own research.</description>
     </item>
     
   </channel>

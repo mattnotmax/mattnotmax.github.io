@@ -11,6 +11,17 @@
     
     
     <item>
+      <title>Introducing bit_of_hex</title>
+      <link>https://bitofhex.com/2018/04/28/introducing-bit_of_hex/</link>
+      <pubDate>Sat, 28 Apr 2018 23:19:10 +0000</pubDate>
+      
+      <guid>https://bitofhex.com/2018/04/28/introducing-bit_of_hex/</guid>
+      <description>Hello!
+This is the beginning of my digital forensics &amp;amp; incident response blog, bit_of_hex. This blog is born of the philosophy that everyone in the DFIR space has something to contribute, at any level or area within the community.
+I also realised that I have benefited for so long from other people&amp;rsquo;s research and effort that it was time I gave something back. Many times when I have searched for that particular forensic artefact or obscure problem I&amp;rsquo;ve found someone who has taken the time to publish their own research.</description>
+    </item>
+    
+    <item>
       <title>About bit_of_hex</title>
       <link>https://bitofhex.com/about/</link>
       <pubDate>Sat, 14 Apr 2018 19:22:21 +0000</pubDate>
